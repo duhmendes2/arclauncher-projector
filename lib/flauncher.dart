@@ -98,10 +98,17 @@ class _FLauncherState extends State<FLauncher> with WidgetsBindingObserver {
               builder: (_, wallpaperService, __) => _wallpaper(context, wallpaperService),
             ),
           ),
-          Selector2<LauncherState, SettingsService, (bool, bool)>(
-            selector: (_, launcherState, settings) => (launcherState.appGridFocused, settings.backgroundBlurDisabled),
+          Selector3<LauncherState, SettingsService, WallpaperService, (bool, bool, bool)>(
+            selector: (_, launcherState, settings, wallpaperService) => (
+              launcherState.appGridFocused,
+              settings.backgroundBlurDisabled,
+              wallpaperService.wallpaperVideoFile != null,
+            ),
             builder: (_, data, __) {
-              final (appGridFocused, blurDisabled) = data;
+              final (appGridFocused, blurDisabled, hasVideoWallpaper) = data;
+              if (hasVideoWallpaper) {
+                return const SizedBox.shrink();
+              }
               return Positioned.fill(
                 child: IgnorePointer(
                   child: AnimatedOpacity(

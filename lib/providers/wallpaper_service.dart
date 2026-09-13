@@ -18,7 +18,9 @@
 
 import 'dart:io';
 import 'dart:async';
+import 'dart:typed_data';
 
+import 'package:flauncher/flauncher_channel.dart';
 import 'package:flauncher/gradients.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flutter/cupertino.dart';
@@ -26,6 +28,7 @@ import 'package:path_provider/path_provider.dart';
 
 class WallpaperService extends ChangeNotifier {
   final SettingsService _settingsService;
+  final FLauncherChannel _channel = FLauncherChannel();
 
   late File _wallpaperFile;
   late File _wallpaperDayFile;
@@ -48,13 +51,11 @@ class WallpaperService extends ChangeNotifier {
   }
 
   FLauncherGradient get gradient => FLauncherGradients.all.firstWhere(
-        (gradient) => gradient.uuid == _settingsService.gradientUuid,
-        orElse: () => FLauncherGradients.saintPetersburg,
-      );
+    (gradient) => gradient.uuid == _settingsService.gradientUuid,
+    orElse: () => FLauncherGradients.saintPetersburg,
+  );
 
-  WallpaperService(this._settingsService) :
-    _wallpaper = null
-  {
+  WallpaperService(this._settingsService) : _wallpaper = null {
     _settingsService.addListener(_onSettingsChanged);
     _init();
   }
@@ -95,7 +96,10 @@ class WallpaperService extends ChangeNotifier {
   void _updateTimerState() {
     final enabled = _settingsService.timeBasedWallpaperEnabled;
     if (enabled && (_timer == null || !_timer!.isActive)) {
-      _timer = Timer.periodic(const Duration(minutes: 1), (_) => _updateWallpaper());
+      _timer = Timer.periodic(
+        const Duration(minutes: 1),
+        (_) => _updateWallpaper(),
+      );
     } else if (!enabled && _timer != null) {
       _timer?.cancel();
       _timer = null;
@@ -161,12 +165,33 @@ class WallpaperService extends ChangeNotifier {
     await _saveImage(sourceFile, _wallpaperFile);
   }
 
+  Future<void> pickWallpaperFromUri(String sourceUri) async {
+    await _saveImageBytes(
+      await _channel.loadContentUriImage(sourceUri),
+      _wallpaperFile,
+    );
+  }
+
   Future<void> pickWallpaperDay(File sourceFile) async {
     await _saveImage(sourceFile, _wallpaperDayFile);
   }
 
+  Future<void> pickWallpaperDayFromUri(String sourceUri) async {
+    await _saveImageBytes(
+      await _channel.loadContentUriImage(sourceUri),
+      _wallpaperDayFile,
+    );
+  }
+
   Future<void> pickWallpaperNight(File sourceFile) async {
     await _saveImage(sourceFile, _wallpaperNightFile);
+  }
+
+  Future<void> pickWallpaperNightFromUri(String sourceUri) async {
+    await _saveImageBytes(
+      await _channel.loadContentUriImage(sourceUri),
+      _wallpaperNightFile,
+    );
   }
 
   Future<void> pickVideoWallpaper(File sourceFile) async {
@@ -182,16 +207,35 @@ class WallpaperService extends ChangeNotifier {
   }
 
   Future<void> _saveImage(File sourceFile, File targetFile) async {
-    final pairedVideo = _pairedVideoForImage(targetFile);
-    if (pairedVideo != null && await pairedVideo.exists()) {
-      await pairedVideo.delete();
-      await cleanVideoWallpaperFiles();
-    }
+    await _replacePairedVideo(targetFile);
 
     final readStream = sourceFile.openRead();
     final writeStream = targetFile.openWrite();
     await readStream.cast<List<int>>().pipe(writeStream);
 
+    await _refreshImageWallpaper(targetFile);
+  }
+
+  Future<void> _saveImageBytes(Uint8List imageBytes, File targetFile) async {
+    if (imageBytes.isEmpty) {
+      throw StateError('Unable to read the selected image');
+    }
+
+    await _replacePairedVideo(targetFile);
+    await targetFile.writeAsBytes(imageBytes, flush: true);
+
+    await _refreshImageWallpaper(targetFile);
+  }
+
+  Future<void> _replacePairedVideo(File targetFile) async {
+    final pairedVideo = _pairedVideoForImage(targetFile);
+    if (pairedVideo != null && await pairedVideo.exists()) {
+      await pairedVideo.delete();
+      await cleanVideoWallpaperFiles();
+    }
+  }
+
+  Future<void> _refreshImageWallpaper(File targetFile) async {
     await FileImage(targetFile).evict();
     PaintingBinding.instance.imageCache.clear();
     PaintingBinding.instance.imageCache.clearLiveImages();
@@ -215,14 +259,16 @@ class WallpaperService extends ChangeNotifier {
   File? _pairedVideoForImage(File imageFile) {
     if (imageFile.path == _wallpaperFile.path) return _wallpaperVideoFile;
     if (imageFile.path == _wallpaperDayFile.path) return _wallpaperDayVideoFile;
-    if (imageFile.path == _wallpaperNightFile.path) return _wallpaperNightVideoFile;
+    if (imageFile.path == _wallpaperNightFile.path)
+      return _wallpaperNightVideoFile;
     return null;
   }
 
   File? _pairedImageForVideo(File videoFile) {
     if (videoFile.path == _wallpaperVideoFile.path) return _wallpaperFile;
     if (videoFile.path == _wallpaperDayVideoFile.path) return _wallpaperDayFile;
-    if (videoFile.path == _wallpaperNightVideoFile.path) return _wallpaperNightFile;
+    if (videoFile.path == _wallpaperNightVideoFile.path)
+      return _wallpaperNightFile;
     return null;
   }
 

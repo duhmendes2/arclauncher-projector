@@ -37,85 +37,124 @@ class WallpaperPanelPage extends StatelessWidget {
     AppLocalizations localizations = AppLocalizations.of(context)!;
 
     return Column(
-        children: [
-          Text(localizations.wallpaper, style: Theme.of(context).textTheme.titleLarge),
-          Divider(),
-          Consumer<SettingsService>(
-            builder: (_, settings, __) {
-              return RoundedSwitchListTile(
-                title: Text(localizations.timeBasedWallpaper),
-                secondary: Icon(Icons.access_time),
-                value: settings.timeBasedWallpaperEnabled,
-                onChanged: (value) => settings.setTimeBasedWallpaperEnabled(value),
+      children: [
+        Text(
+          localizations.wallpaper,
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
+        Divider(),
+        Consumer<SettingsService>(
+          builder: (_, settings, __) {
+            return RoundedSwitchListTile(
+              title: Text(localizations.timeBasedWallpaper),
+              secondary: Icon(Icons.access_time),
+              value: settings.timeBasedWallpaperEnabled,
+              onChanged: (value) =>
+                  settings.setTimeBasedWallpaperEnabled(value),
+            );
+          },
+        ),
+        Consumer<SettingsService>(
+          builder: (_, settings, __) {
+            if (settings.timeBasedWallpaperEnabled) {
+              return Column(
+                children: [
+                  FocusableSettingsTile(
+                    leading: Icon(Icons.wb_sunny),
+                    title: Text(localizations.pickDayWallpaper),
+                    onPressed: () => _pickWallpaper(
+                      context,
+                      (s, media) => s.pickWallpaperDayFromUri(media.uri),
+                      false,
+                    ),
+                  ),
+                  FocusableSettingsTile(
+                    leading: Icon(Icons.videocam_outlined),
+                    title: Text(localizations.pickDayVideoWallpaper),
+                    onPressed: () => _pickWallpaper(
+                      context,
+                      (s, media) => s.pickVideoWallpaperDay(File(media.path)),
+                      true,
+                    ),
+                  ),
+                  FocusableSettingsTile(
+                    leading: Icon(Icons.nights_stay),
+                    title: Text(localizations.pickNightWallpaper),
+                    onPressed: () => _pickWallpaper(
+                      context,
+                      (s, media) => s.pickWallpaperNightFromUri(media.uri),
+                      false,
+                    ),
+                  ),
+                  FocusableSettingsTile(
+                    leading: Icon(Icons.videocam_outlined),
+                    title: Text(localizations.pickNightVideoWallpaper),
+                    onPressed: () => _pickWallpaper(
+                      context,
+                      (s, media) => s.pickVideoWallpaperNight(File(media.path)),
+                      true,
+                    ),
+                  ),
+                ],
+              );
+            } else {
+              return Column(
+                children: [
+                  FocusableSettingsTile(
+                    autofocus: true,
+                    leading: Icon(Icons.gradient),
+                    title: Text(
+                      localizations.gradient,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                    onPressed: () => Navigator.of(
+                      context,
+                    ).pushNamed(GradientPanelPage.routeName),
+                  ),
+                  FocusableSettingsTile(
+                    leading: Icon(Icons.insert_drive_file_outlined),
+                    title: Text(
+                      localizations.picture,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                    onPressed: () => _pickWallpaper(
+                      context,
+                      (s, media) => s.pickWallpaperFromUri(media.uri),
+                      false,
+                    ),
+                  ),
+                  FocusableSettingsTile(
+                    leading: Icon(Icons.videocam_outlined),
+                    title: Text(
+                      localizations.video,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                    onPressed: () => _pickWallpaper(
+                      context,
+                      (s, media) => s.pickVideoWallpaper(File(media.path)),
+                      true,
+                    ),
+                  ),
+                ],
               );
             }
-          ),
-          Consumer<SettingsService>(
-            builder: (_, settings, __) {
-              if (settings.timeBasedWallpaperEnabled) {
-                return Column(
-                  children: [
-                    FocusableSettingsTile(
-                      leading: Icon(Icons.wb_sunny),
-                      title: Text(localizations.pickDayWallpaper),
-                      onPressed: () => _pickWallpaper(context, (s, f) => s.pickWallpaperDay(f), false),
-                    ),
-                    FocusableSettingsTile(
-                      leading: Icon(Icons.videocam_outlined),
-                      title: Text(localizations.pickDayVideoWallpaper),
-                      onPressed: () => _pickWallpaper(context, (s, f) => s.pickVideoWallpaperDay(f), true),
-                    ),
-                    FocusableSettingsTile(
-                      leading: Icon(Icons.nights_stay),
-                      title: Text(localizations.pickNightWallpaper),
-                      onPressed: () => _pickWallpaper(context, (s, f) => s.pickWallpaperNight(f), false),
-                    ),
-                    FocusableSettingsTile(
-                      leading: Icon(Icons.videocam_outlined),
-                      title: Text(localizations.pickNightVideoWallpaper),
-                      onPressed: () => _pickWallpaper(context, (s, f) => s.pickVideoWallpaperNight(f), true),
-                    ),
-                  ],
-                );
-              } else {
-                return Column(
-                  children: [
-                    FocusableSettingsTile(
-                      autofocus: true,
-                      leading: Icon(Icons.gradient),
-                      title: Text(localizations.gradient, style: Theme.of(context).textTheme.bodyMedium),
-                      onPressed: () => Navigator.of(context).pushNamed(GradientPanelPage.routeName),
-                    ),
-                    FocusableSettingsTile(
-                      leading: Icon(Icons.insert_drive_file_outlined),
-                      title: Text(localizations.picture, style: Theme.of(context).textTheme.bodyMedium),
-                      onPressed: () => _pickWallpaper(context, (s, f) => s.pickWallpaper(f), false),
-                    ),
-                    FocusableSettingsTile(
-                      leading: Icon(Icons.videocam_outlined),
-                      title: Text(localizations.video, style: Theme.of(context).textTheme.bodyMedium),
-                      onPressed: () => _pickWallpaper(context, (s, f) => s.pickVideoWallpaper(f), true),
-                    ),
-                  ],
-                );
-              }
-            }
-          ),
-        ],
+          },
+        ),
+      ],
     );
   }
 
   Future<void> _pickWallpaper(
     BuildContext context,
-    Future<void> Function(WallpaperService, File) action,
+    Future<void> Function(WallpaperService, TvMediaSelection) action,
     bool isVideo,
   ) async {
-    final path = await TvMediaPicker.show(
+    final media = await TvMediaPicker.show(
       context,
       mode: isVideo ? TvMediaPickerMode.video : TvMediaPickerMode.image,
     );
-    if (path != null && context.mounted) {
-      await action(context.read<WallpaperService>(), File(path));
+    if (media != null && context.mounted) {
+      await action(context.read<WallpaperService>(), media);
     }
   }
 }

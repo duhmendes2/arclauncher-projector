@@ -221,19 +221,19 @@ class _ApplicationInfoPanelState extends State<ApplicationInfoPanel>
                                  Text('Set Custom Banner', style: Theme.of(context).textTheme.bodyMedium),
                                ],
                              ),
-                             onPressed: () async {
-                               try {
-                                 final path = await TvMediaPicker.show(
-                                   context,
-                                   mode: TvMediaPickerMode.image,
-                                 );
-                                 if (path != null) {
-                                   final docDir = await getApplicationDocumentsDirectory();
-                                   // Sanitize package name for filename
-                                   final safePackageName = widget.application.packageName
-                                       .replaceAll(RegExp(r'[^a-zA-Z0-9._-]'), '_');
-                                   final savedImage = File('${docDir.path}/custom_banner_$safePackageName.png');
-                                   await File(path).copy(savedImage.path);
+onPressed: () async {
+                                try {
+                                  final media = await TvMediaPicker.show(
+                                    context,
+                                    mode: TvMediaPickerMode.image,
+                                  );
+                                  if (media != null) {
+                                    final docDir = await getApplicationDocumentsDirectory();
+                                    // Sanitize package name for filename
+                                    final safePackageName = widget.application.packageName
+                                        .replaceAll(RegExp(r'[^a-zA-Z0-9._-]'), '_');
+                                    final savedImage = File('${docDir.path}/custom_banner_$safePackageName.png');
+                                    await File(media.path).copy(savedImage.path);
                                    await context.read<AppsService>().setCustomAppBanner(widget.application.packageName, savedImage.path);
                                    // Refresh the future to reflect the change
                                    setState(() {

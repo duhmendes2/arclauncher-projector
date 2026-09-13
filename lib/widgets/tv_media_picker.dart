@@ -11,8 +11,11 @@ class TvMediaPicker extends StatefulWidget {
 
   const TvMediaPicker({super.key, required this.mode});
 
-  static Future<String?> show(BuildContext context, {required TvMediaPickerMode mode}) async {
-    final result = await showDialog<String>(
+  static Future<TvMediaSelection?> show(
+    BuildContext context, {
+    required TvMediaPickerMode mode,
+  }) async {
+    final result = await showDialog<TvMediaSelection>(
       context: context,
       barrierDismissible: false,
       builder: (_) => TvMediaPicker(mode: mode),
@@ -24,7 +27,8 @@ class TvMediaPicker extends StatefulWidget {
   State<TvMediaPicker> createState() => _TvMediaPickerState();
 }
 
-class _TvMediaPickerState extends State<TvMediaPicker> with WidgetsBindingObserver {
+class _TvMediaPickerState extends State<TvMediaPicker>
+    with WidgetsBindingObserver {
   final FLauncherChannel _channel = FLauncherChannel();
   List<_MediaItem> _items = [];
   bool _loading = true;
@@ -63,7 +67,10 @@ class _TvMediaPickerState extends State<TvMediaPicker> with WidgetsBindingObserv
   }
 
   Future<void> _requestPermissionAndLoad() async {
-    setState(() { _loading = true; _permissionDenied = false; });
+    setState(() {
+      _loading = true;
+      _permissionDenied = false;
+    });
 
     bool granted = await _channel.checkMediaPermissions();
 
@@ -75,7 +82,10 @@ class _TvMediaPickerState extends State<TvMediaPicker> with WidgetsBindingObserv
 
     if (!granted) {
       if (mounted) {
-        setState(() { _loading = false; _permissionDenied = true; });
+        setState(() {
+          _loading = false;
+          _permissionDenied = true;
+        });
       }
       return;
     }
@@ -84,7 +94,10 @@ class _TvMediaPickerState extends State<TvMediaPicker> with WidgetsBindingObserv
   }
 
   Future<void> _loadMedia() async {
-    setState(() { _loading = true; _permissionDenied = false; });
+    setState(() {
+      _loading = true;
+      _permissionDenied = false;
+    });
     try {
       final data = isImage
           ? await _channel.getMediaStoreImages()
@@ -94,11 +107,14 @@ class _TvMediaPickerState extends State<TvMediaPicker> with WidgetsBindingObserv
       for (final entry in data) {
         final path = entry['path'] as String?;
         if (path != null && await File(path).exists()) {
-          items.add(_MediaItem(
-            id: (entry['id'] as num).toInt(),
-            name: entry['name'] as String? ?? 'Unknown',
-            path: path,
-          ));
+          items.add(
+            _MediaItem(
+              id: (entry['id'] as num).toInt(),
+              name: entry['name'] as String? ?? 'Unknown',
+              path: path,
+              uri: entry['uri'] as String,
+            ),
+          );
         }
       }
       if (mounted) {
@@ -117,7 +133,8 @@ class _TvMediaPickerState extends State<TvMediaPicker> with WidgetsBindingObserv
 
   void _select() {
     if (_items.isEmpty) return;
-    Navigator.of(context).pop(_items[_selectedIndex].path);
+    final item = _items[_selectedIndex];
+    Navigator.of(context).pop(TvMediaSelection(uri: item.uri, path: item.path));
   }
 
   void _moveFocus(int direction) {
@@ -138,14 +155,23 @@ class _TvMediaPickerState extends State<TvMediaPicker> with WidgetsBindingObserv
     final currentScroll = _scrollController.offset;
 
     if (offset < currentScroll) {
-      _scrollController.animateTo(offset, duration: const Duration(milliseconds: 200), curve: Curves.easeOut);
+      _scrollController.animateTo(
+        offset,
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeOut,
+      );
     } else if (offset + itemHeight > currentScroll + viewportHeight) {
-      _scrollController.animateTo(offset + itemHeight - viewportHeight, duration: const Duration(milliseconds: 200), curve: Curves.easeOut);
+      _scrollController.animateTo(
+        offset + itemHeight - viewportHeight,
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeOut,
+      );
     }
   }
 
   KeyEventResult _handleKeyEvent(FocusNode node, KeyEvent event) {
-    if (event is! KeyDownEvent && event is! KeyRepeatEvent) return KeyEventResult.ignored;
+    if (event is! KeyDownEvent && event is! KeyRepeatEvent)
+      return KeyEventResult.ignored;
 
     if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
       _moveFocus(1);
@@ -160,8 +186,8 @@ class _TvMediaPickerState extends State<TvMediaPicker> with WidgetsBindingObserv
       _moveFocus(-5);
       return KeyEventResult.handled;
     } else if (event.logicalKey == LogicalKeyboardKey.select ||
-               event.logicalKey == LogicalKeyboardKey.enter ||
-               event.logicalKey == LogicalKeyboardKey.gameButtonA) {
+        event.logicalKey == LogicalKeyboardKey.enter ||
+        event.logicalKey == LogicalKeyboardKey.gameButtonA) {
       _select();
       return KeyEventResult.handled;
     } else if (event.logicalKey == LogicalKeyboardKey.escape) {
@@ -179,7 +205,9 @@ class _TvMediaPickerState extends State<TvMediaPicker> with WidgetsBindingObserv
     return Dialog(
       backgroundColor: const Color(0xFF1A1A2E),
       insetPadding: const EdgeInsets.all(40),
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(20)),
+      ),
       child: Focus(
         autofocus: true,
         onKeyEvent: _handleKeyEvent,
@@ -190,12 +218,26 @@ class _TvMediaPickerState extends State<TvMediaPicker> with WidgetsBindingObserv
               padding: const EdgeInsets.fromLTRB(32, 24, 32, 16),
               child: Row(
                 children: [
-                  Icon(isImage ? Icons.image : Icons.videocam, color: accentColor, size: 28),
+                  Icon(
+                    isImage ? Icons.image : Icons.videocam,
+                    color: accentColor,
+                    size: 28,
+                  ),
                   const SizedBox(width: 12),
-                  Text(title, style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: Colors.white)),
+                  Text(
+                    title,
+                    style: Theme.of(
+                      context,
+                    ).textTheme.headlineSmall?.copyWith(color: Colors.white),
+                  ),
                   const Spacer(),
                   if (!_permissionDenied && !_loading)
-                    Text('${_items.length} items', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.white54)),
+                    Text(
+                      '${_items.length} items',
+                      style: Theme.of(
+                        context,
+                      ).textTheme.bodyMedium?.copyWith(color: Colors.white54),
+                    ),
                 ],
               ),
             ),
@@ -204,15 +246,20 @@ class _TvMediaPickerState extends State<TvMediaPicker> with WidgetsBindingObserv
               child: _loading
                   ? const Center(child: CircularProgressIndicator())
                   : _permissionDenied
-                      ? _buildPermissionDenied(accentColor)
-                      : _items.isEmpty
-                          ? Center(
-                              child: Text(
-                                isImage ? 'No images found on device' : 'No videos found on device',
-                                style: const TextStyle(color: Colors.white54, fontSize: 16),
-                              ),
-                            )
-                          : _buildGrid(),
+                  ? _buildPermissionDenied(accentColor)
+                  : _items.isEmpty
+                  ? Center(
+                      child: Text(
+                        isImage
+                            ? 'No images found on device'
+                            : 'No videos found on device',
+                        style: const TextStyle(
+                          color: Colors.white54,
+                          fontSize: 16,
+                        ),
+                      ),
+                    )
+                  : _buildGrid(),
             ),
             Padding(
               padding: const EdgeInsets.all(16),
@@ -292,7 +339,21 @@ class _MediaItem {
   final int id;
   final String name;
   final String path;
-  _MediaItem({required this.id, required this.name, required this.path});
+  final String uri;
+
+  _MediaItem({
+    required this.id,
+    required this.name,
+    required this.path,
+    required this.uri,
+  });
+}
+
+class TvMediaSelection {
+  final String uri;
+  final String path;
+
+  const TvMediaSelection({required this.uri, required this.path});
 }
 
 class _MediaTile extends StatelessWidget {
@@ -334,11 +395,17 @@ class _MediaTile extends StatelessWidget {
                       child: Icon(Icons.broken_image, color: Colors.white38),
                     ),
                   )
-                : _VideoThumbnail(id: item.id, path: item.path, accentColor: accentColor),
+                : _VideoThumbnail(
+                    id: item.id,
+                    path: item.path,
+                    accentColor: accentColor,
+                  ),
           ),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            color: isSelected ? accentColor.withValues(alpha: 0.2) : Colors.black45,
+            color: isSelected
+                ? accentColor.withValues(alpha: 0.2)
+                : Colors.black45,
             child: Text(
               item.name,
               maxLines: 1,
@@ -371,8 +438,8 @@ class _VideoThumbnail extends StatefulWidget {
 }
 
 class _VideoThumbnailState extends State<_VideoThumbnail> {
-  late final Future<Uint8List?> _thumb =
-      FLauncherChannel().getMediaStoreVideoThumbnail(widget.id, path: widget.path);
+  late final Future<Uint8List?> _thumb = FLauncherChannel()
+      .getMediaStoreVideoThumbnail(widget.id, path: widget.path);
 
   @override
   Widget build(BuildContext context) {
@@ -398,9 +465,16 @@ class _VideoThumbnailState extends State<_VideoThumbnail> {
               )
             else
               Container(
-                decoration: const BoxDecoration(color: Colors.black54, shape: BoxShape.circle),
+                decoration: const BoxDecoration(
+                  color: Colors.black54,
+                  shape: BoxShape.circle,
+                ),
                 padding: const EdgeInsets.all(8),
-                child: const Icon(Icons.play_arrow, color: Colors.white, size: 24),
+                child: const Icon(
+                  Icons.play_arrow,
+                  color: Colors.white,
+                  size: 24,
+                ),
               ),
           ],
         );

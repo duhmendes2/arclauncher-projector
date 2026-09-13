@@ -17,9 +17,11 @@
  */
 
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flauncher/gradients.dart';
 import 'package:flauncher/providers/wallpaper_service.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
@@ -31,7 +33,9 @@ void main() {
   late final _MockPathProviderPlatform pathProviderPlatform;
   setUpAll(() {
     pathProviderPlatform = _MockPathProviderPlatform();
-    when(pathProviderPlatform.getApplicationDocumentsPath()).thenAnswer((_) => Future.value("."));
+    when(
+      pathProviderPlatform.getApplicationDocumentsPath(),
+    ).thenAnswer((_) => Future.value("."));
     PathProviderPlatform.instance = pathProviderPlatform;
   });
 
@@ -54,6 +58,35 @@ void main() {
 
     expect(await File("./wallpaper").exists(), isTrue);
     expect(await File("./wallpaper").readAsBytes(), [0x01, 0x02]);
+  });
+
+  test("pickWallpaperFromUri saves the selected image bytes", () async {
+    TestWidgetsFlutterBinding.ensureInitialized();
+    const channel = MethodChannel('me.efesser.flauncher/method');
+    final messenger =
+        TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
+    messenger.setMockMethodCallHandler(channel, (call) async {
+      if (call.method == 'loadContentUriImage') {
+        return Uint8List.fromList([0x03, 0x04]);
+      }
+      return null;
+    });
+    addTearDown(() => messenger.setMockMethodCallHandler(channel, null));
+
+    final settingsService = MockSettingsService();
+    when(settingsService.timeBasedWallpaperEnabled).thenReturn(false);
+    final wallpaperService = WallpaperService(settingsService);
+    await untilCalled(pathProviderPlatform.getApplicationDocumentsPath());
+    addTearDown(() async {
+      final dest = File('./wallpaper');
+      if (await dest.exists()) await dest.delete();
+    });
+
+    await wallpaperService.pickWallpaperFromUri(
+      'content://media/external/images/media/1',
+    );
+
+    expect(await File('./wallpaper').readAsBytes(), [0x03, 0x04]);
   });
 
   test("setGradient", () async {
@@ -85,7 +118,9 @@ void main() {
       final settingsService = MockSettingsService();
       when(settingsService.timeBasedWallpaperEnabled).thenReturn(false);
       final wallpaperService = WallpaperService(settingsService);
-      when(settingsService.gradientUuid).thenReturn(FLauncherGradients.grassShampoo.uuid);
+      when(
+        settingsService.gradientUuid,
+      ).thenReturn(FLauncherGradients.grassShampoo.uuid);
       await untilCalled(pathProviderPlatform.getApplicationDocumentsPath());
 
       final gradient = wallpaperService.gradient;
@@ -95,8 +130,12 @@ void main() {
   });
 }
 
-class _MockPathProviderPlatform extends Mock with MockPlatformInterfaceMixin implements PathProviderPlatform {
+class _MockPathProviderPlatform extends Mock
+    with MockPlatformInterfaceMixin
+    implements PathProviderPlatform {
   @override
-  Future<String?> getApplicationDocumentsPath() =>
-      super.noSuchMethod(Invocation.method(#getApplicationDocumentsPath, []), returnValue: Future<String?>.value());
+  Future<String?> getApplicationDocumentsPath() => super.noSuchMethod(
+    Invocation.method(#getApplicationDocumentsPath, []),
+    returnValue: Future<String?>.value(),
+  );
 }

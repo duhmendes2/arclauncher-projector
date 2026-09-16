@@ -1,4 +1,4 @@
-﻿package me.efesser.flauncher;
+package me.efesser.flauncher;
 
 import android.accessibilityservice.AccessibilityService;
 import android.content.Intent;

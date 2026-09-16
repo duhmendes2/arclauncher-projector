@@ -1,4 +1,4 @@
-﻿name: Build Projector APK
+name: Build Projector APK
 
 on:
   push:
@@ -37,8 +37,8 @@ jobs:
           storePassword=projectorpass
           keyAlias=upload
           keyPassword=projectorpass
-          flutter.versionCode=4121
-          flutter.versionName=1.1.0-projector
+          flutter.versionCode=4122
+          flutter.versionName=1.1.1-projector
           EOF
 
       - name: Install dependencies
@@ -48,8 +48,8 @@ jobs:
         run: |
           flutter build apk --release --flavor github \
             --dart-define=ENABLE_SELF_UPDATER=true \
-            --build-number=4121 \
-            --build-name=1.1.0-projector
+            --build-number=4122 \
+            --build-name=1.1.1-projector
 
       - name: Prepare APK outputs
         run: |
@@ -69,15 +69,15 @@ jobs:
         uses: softprops/action-gh-release@v2
         if: github.ref == 'refs/heads/main'
         with:
-          tag_name: v1.1.0-projector
-          name: Arc Launcher Projector Edition v1.1.0
+          tag_name: v1.1.1-projector
+          name: Arc Launcher Projector Edition v1.1.1
           body: |
-            ## Arc Launcher: Projector Edition v1.1.0
-            - 🎯 **Interceptação de Home e Back:** Impede o projetor de cair no Whale TV.
-            - 🚀 **Início Automático no Boot:** Suporte nativo via `AccessibilityService` e `BootReceiver`.
-            - 🎨 **Logo DUH! FILM & PHOTO:** Integrado na barra inicial do launcher.
-            - 🎬 **Papéis de Parede de Cinema:** Galeria de filmes em alta resolução (1080p).
-            - 📡 **Auto-Update OTA:** Suporte a atualizações automáticas direto pela internet.
+            ## Arc Launcher: Projector Edition v1.1.1
+            - 🎮 **Novo Menu "Projetor & Controle Remoto":** Atalho direto para Acessibilidade, Keystone, HDMI e Bluetooth dentro das configurações.
+            - 🎬 **Correção de Papéis de Parede:** Suporte completo para seleção e aplicação usando o botão OK / Enter do controle remoto.
+            - 🎨 **Splash Screen DUH!:** Logo DUH! FILM & PHOTO exibido em destaque no carregamento do launcher.
+            - 🛡️ **Garantia de Aplicação:** Desativação automática de conflitos dia/noite ao escolher artes de cinema.
+            - 📡 **Auto-Update OTA:** Compatível com atualizações pela internet sem pendrive.
           files: |
             apks/ArcLauncher_Projector_Edition.apk
             apks/*.apk

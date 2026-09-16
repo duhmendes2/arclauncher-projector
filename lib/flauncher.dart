@@ -517,9 +517,19 @@ class _FLauncherState extends State<FLauncher> with WidgetsBindingObserver {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const CircularProgressIndicator(),
-          const SizedBox(height: 16),
-          Text(localizations.loading, style: Theme.of(context).textTheme.titleLarge),
+          Image.asset(
+            'assets/duh_logo.png',
+            width: 200,
+            fit: BoxFit.contain,
+          ),
+          const SizedBox(height: 24),
+          const SizedBox(
+            width: 24,
+            height: 24,
+            child: CircularProgressIndicator(strokeWidth: 2, color: Colors.amberAccent),
+          ),
+          const SizedBox(height: 12),
+          Text(localizations.loading, style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.white70)),
         ],
       ),
     );

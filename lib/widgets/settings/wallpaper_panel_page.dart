@@ -23,6 +23,7 @@ import 'package:flauncher/providers/wallpaper_service.dart';
 import 'package:flauncher/widgets/settings/focusable_settings_tile.dart';
 import 'package:flauncher/widgets/settings/gradient_panel_page.dart';
 import 'package:flauncher/widgets/tv_media_picker.dart';
+import 'package:flauncher/widgets/movie_wallpapers_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flauncher/l10n/app_localizations.dart';
@@ -121,6 +122,14 @@ class WallpaperPanelPage extends StatelessWidget {
                       context,
                       (s, media) => s.pickWallpaperFromUri(media.uri),
                       false,
+                    ),
+                  ),
+                  FocusableSettingsTile(
+                    leading: const Icon(Icons.movie_filter_rounded, color: Colors.amberAccent),
+                    title: const Text('Papéis de Parede de Cinema (1080p)'),
+                    onPressed: () => showDialog(
+                      context: context,
+                      builder: (_) => const MovieWallpapersDialog(),
                     ),
                   ),
                   FocusableSettingsTile(

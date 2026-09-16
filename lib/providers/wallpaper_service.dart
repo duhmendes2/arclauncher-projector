@@ -173,6 +173,19 @@ class WallpaperService extends ChangeNotifier {
   }
 
   Future<void> setWallpaperFromBytes(Uint8List bytes) async {
+    if (_settingsService.timeBasedWallpaperEnabled) {
+      await _settingsService.setTimeBasedWallpaperEnabled(false);
+    }
+    if (_wallpaperDayFile.existsSync()) {
+      try {
+        await _wallpaperDayFile.delete();
+      } catch (_) {}
+    }
+    if (_wallpaperNightFile.existsSync()) {
+      try {
+        await _wallpaperNightFile.delete();
+      } catch (_) {}
+    }
     await _saveImageBytes(bytes, _wallpaperFile);
   }
 

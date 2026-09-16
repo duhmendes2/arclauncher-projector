@@ -24,6 +24,7 @@ import 'package:flauncher/widgets/settings/flauncher_about_dialog.dart';
 import 'package:flauncher/widgets/settings/interface_settings_page.dart';
 import 'package:flauncher/widgets/settings/update_dialogs.dart';
 import 'package:flauncher/widgets/settings/general_settings_page.dart';
+import 'package:flauncher/widgets/settings/projector_settings_page.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
@@ -56,6 +57,14 @@ class SettingsPanelPage extends StatelessWidget {
                   leading: const Icon(Icons.auto_awesome_mosaic_outlined),
                   title: Text(localizations.interface, style: Theme.of(context).textTheme.bodyMedium),
                   onPressed: () => Navigator.of(context).pushNamed(InterfaceSettingsPage.routeName),
+                ),
+                FocusableSettingsTile(
+                  leading: const Icon(Icons.videocam_outlined, color: Colors.amberAccent),
+                  title: const Text(
+                    'Projetor & Controle Remoto',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  onPressed: () => Navigator.of(context).pushNamed(ProjectorSettingsPage.routeName),
                 ),
                 FocusableSettingsTile(
                   leading: const Icon(Icons.settings_suggest_outlined),

@@ -187,64 +187,107 @@ class _MovieWallpapersDialogState extends State<MovieWallpapersDialog> {
                       itemCount: _movies.length,
                       itemBuilder: (context, index) {
                         final movie = _movies[index];
-                        return Focus(
-                          child: Builder(
-                            builder: (focusContext) {
-                              final isFocused = Focus.of(focusContext).hasFocus;
-                              return InkWell(
-                                onTap: () => _applyWallpaper(movie),
-                                borderRadius: BorderRadius.circular(10),
-                                child: AnimatedContainer(
-                                  duration: const Duration(milliseconds: 150),
-                                  decoration: BoxDecoration(
+                        return Actions(
+                          actions: <Type, Action<Intent>>{
+                            ActivateIntent: CallbackAction<ActivateIntent>(onInvoke: (_) => _applyWallpaper(movie)),
+                            ButtonActivateIntent: CallbackAction<ButtonActivateIntent>(onInvoke: (_) => _applyWallpaper(movie)),
+                          },
+                          child: Focus(
+                            canRequestFocus: false,
+                            child: Builder(
+                              builder: (focusContext) {
+                                final isFocused = Focus.of(focusContext).hasFocus;
+                                return Card(
+                                  clipBehavior: Clip.antiAlias,
+                                  elevation: isFocused ? 8 : 2,
+                                  shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10),
-                                    border: Border.all(
+                                    side: BorderSide(
                                       color: isFocused ? Colors.amberAccent : Colors.white24,
                                       width: isFocused ? 3 : 1,
                                     ),
-                                    boxShadow: isFocused
-                                        ? [
-                                            BoxShadow(
-                                              color: Colors.amberAccent.withOpacity(0.4),
-                                              blurRadius: 10,
-                                              spreadRadius: 2,
-                                            )
-                                          ]
-                                        : null,
-                                    image: DecorationImage(
-                                      image: NetworkImage(movie.imageUrl),
-                                      fit: BoxFit.cover,
+                                  ),
+                                  child: InkWell(
+                                    autofocus: index == 0,
+                                    onTap: () => _applyWallpaper(movie),
+                                    child: Stack(
+                                      fit: StackFit.expand,
+                                      children: [
+                                        Image.network(
+                                          movie.imageUrl,
+                                          fit: BoxFit.cover,
+                                          loadingBuilder: (ctx, child, progress) {
+                                            if (progress == null) return child;
+                                            return Container(
+                                              color: Colors.black45,
+                                              child: const Center(
+                                                child: CircularProgressIndicator(
+                                                  strokeWidth: 2,
+                                                  color: Colors.white24,
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                          errorBuilder: (ctx, err, stack) {
+                                            return Container(
+                                              color: Colors.black54,
+                                              child: const Center(
+                                                child: Icon(Icons.broken_image_rounded, color: Colors.white38),
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                        Positioned(
+                                          bottom: 0,
+                                          left: 0,
+                                          right: 0,
+                                          child: Container(
+                                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                                            decoration: const BoxDecoration(
+                                              gradient: LinearGradient(
+                                                begin: Alignment.topCenter,
+                                                end: Alignment.bottomCenter,
+                                                colors: [Colors.transparent, Colors.black87],
+                                              ),
+                                            ),
+                                            child: Text(
+                                              movie.title,
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: TextStyle(
+                                                color: isFocused ? Colors.amberAccent : Colors.white,
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        if (isFocused)
+                                          Positioned(
+                                            top: 4,
+                                            right: 4,
+                                            child: Container(
+                                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                              decoration: BoxDecoration(
+                                                color: Colors.amberAccent,
+                                                borderRadius: BorderRadius.circular(4),
+                                              ),
+                                              child: const Text(
+                                                'OK: Aplicar',
+                                                style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 9,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                      ],
                                     ),
                                   ),
-                                  alignment: Alignment.bottomCenter,
-                                  child: Container(
-                                    width: double.infinity,
-                                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-                                    decoration: const BoxDecoration(
-                                      borderRadius: BorderRadius.only(
-                                        bottomLeft: Radius.circular(8),
-                                        bottomRight: Radius.circular(8),
-                                      ),
-                                      gradient: LinearGradient(
-                                        begin: Alignment.topCenter,
-                                        end: Alignment.bottomCenter,
-                                        colors: [Colors.transparent, Colors.black87],
-                                      ),
-                                    ),
-                                    child: Text(
-                                      movie.title,
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 11,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              );
-                            },
+                                );
+                              },
+                            ),
                           ),
                         );
                       },

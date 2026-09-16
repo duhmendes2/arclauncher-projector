@@ -130,6 +130,7 @@ public class MainActivity extends FlutterActivity {
                 case "openBluetoothSettings" -> result.success(openBluetoothSettings());
                 case "openProjectorSettings" -> result.success(openProjectorSettings());
                 case "openTvInputs" -> result.success(openTvInputs());
+                case "openAccessibilitySettings" -> result.success(openAccessibilitySettings());
                 default -> throw new IllegalArgumentException();
             }
         });
@@ -409,6 +410,15 @@ public class MainActivity extends FlutterActivity {
             }
         } catch (Exception ignored) {}
         return false;
+    }
+
+    private boolean openAccessibilitySettings() {
+        return launchActivityFromAction(Settings.ACTION_ACCESSIBILITY_SETTINGS);
+    }
+
+    @Override
+    public void onBackPressed() {
+        // Prevent launcher from closing and falling back to stock Whale TV
     }
 
     private boolean installApk(String apkPath) {

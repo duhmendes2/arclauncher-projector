@@ -172,6 +172,10 @@ class WallpaperService extends ChangeNotifier {
     );
   }
 
+  Future<void> setWallpaperFromBytes(Uint8List bytes) async {
+    await _saveImageBytes(bytes, _wallpaperFile);
+  }
+
   Future<void> pickWallpaperDay(File sourceFile) async {
     await _saveImage(sourceFile, _wallpaperDayFile);
   }

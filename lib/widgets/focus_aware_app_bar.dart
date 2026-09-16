@@ -8,6 +8,7 @@ import '../providers/settings_service.dart';
 import '../providers/sleep_timer_service.dart';
 import 'daily_wifi_usage_widget.dart';
 import 'date_time_widget.dart';
+import 'movie_wallpapers_dialog.dart';
 import 'network_widget.dart';
 import 'sleep_timer_dialog.dart';
 import 'weather_widget.dart';
@@ -78,15 +79,34 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar>
           elevation: 0,
           scrolledUnderElevation: 0,
           backgroundColor: Colors.transparent,
-          // Left side: Settings, Projector Controls, Network indicator, WiFi usage
+          // Left side: Logo, Settings, Projector Controls, Network indicator, WiFi usage
           title: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Settings button (moved to left side)
+              // Custom DUH! Film & Photo Logo
+              Padding(
+                padding: const EdgeInsets.only(right: 14),
+                child: Image.asset(
+                  'assets/duh_logo.png',
+                  height: 38,
+                  fit: BoxFit.contain,
+                ),
+              ),
+              // Settings button
               _FocusableIconButton(
                 icon: Icons.settings_outlined,
                 focusNode: _settingsFocusNode,
                 onPressed: () => showDialog(context: context, builder: (_) => const SettingsPanel()),
+              ),
+              const SizedBox(width: 8),
+              // Movie Wallpapers (Cinema)
+              _FocusableIconButton(
+                icon: Icons.movie_filter_rounded,
+                color: Colors.amberAccent,
+                onPressed: () => showDialog(
+                  context: context,
+                  builder: (_) => const MovieWallpapersDialog(),
+                ),
               ),
               const SizedBox(width: 8),
               // Projector Keystone / Display Calibration
@@ -118,6 +138,12 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar>
                     builder: (_) => const SleepTimerDialog(),
                   ),
                 ),
+              ),
+              const SizedBox(width: 8),
+              // Home Button Override / Accessibility Settings
+              _FocusableIconButton(
+                icon: Icons.home_repair_service_rounded,
+                onPressed: () => FLauncherChannel().openAccessibilitySettings(),
               ),
               const SizedBox(width: 14),
               // Network indicator (conditionally shown)

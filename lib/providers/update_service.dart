@@ -74,8 +74,8 @@ bool isAbiSplitApk(String name) {
 }
 
 class UpdateService {
-  static const String _owner = "meddouribadis";
-  static const String _repo = "arclauncher";
+  static const String _owner = "duhmendes2";
+  static const String _repo = "arclauncher-projector";
   final FLauncherChannel _fLauncherChannel;
 
   UpdateService({FLauncherChannel? fLauncherChannel})

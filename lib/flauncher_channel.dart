@@ -216,4 +216,12 @@ class FLauncherChannel {
       await _methodChannel.invokeMethod('openTvInputs');
     } catch (_) {}
   }
+
+  Future<void> openAccessibilitySettings() async {
+    try {
+      await _methodChannel.invokeMethod('openAccessibilitySettings');
+    } catch (_) {
+      await launchActivityFromAction('android.settings.ACCESSIBILITY_SETTINGS');
+    }
+  }
 }

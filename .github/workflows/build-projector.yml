@@ -37,8 +37,8 @@ jobs:
           storePassword=projectorpass
           keyAlias=upload
           keyPassword=projectorpass
-          flutter.versionCode=4120
-          flutter.versionName=1.0.8-projector
+          flutter.versionCode=4121
+          flutter.versionName=1.1.0-projector
           EOF
 
       - name: Install dependencies
@@ -47,13 +47,14 @@ jobs:
       - name: Build APKs
         run: |
           flutter build apk --release --flavor github \
-            --dart-define=ENABLE_SELF_UPDATER=false \
-            --build-number=4120 \
-            --build-name=1.0.8-projector
+            --dart-define=ENABLE_SELF_UPDATER=true \
+            --build-number=4121 \
+            --build-name=1.1.0-projector
 
       - name: Prepare APK outputs
         run: |
           mkdir -p apks
+          find build/app/outputs/flutter-apk -name "app-github-release.apk" -exec cp {} apks/ArcLauncher_Projector_Edition.apk \;
           find build/app/outputs/flutter-apk -name "*.apk" -exec cp {} apks/ \;
           ls -lh apks/
 
@@ -63,3 +64,22 @@ jobs:
           name: arclauncher-projector-apks
           path: apks/*.apk
           retention-days: 7
+
+      - name: Create or Update GitHub Release
+        uses: softprops/action-gh-release@v2
+        if: github.ref == 'refs/heads/main'
+        with:
+          tag_name: v1.1.0-projector
+          name: Arc Launcher Projector Edition v1.1.0
+          body: |
+            ## Arc Launcher: Projector Edition v1.1.0
+            - 🎯 **Interceptação de Home e Back:** Impede o projetor de cair no Whale TV.
+            - 🚀 **Início Automático no Boot:** Suporte nativo via `AccessibilityService` e `BootReceiver`.
+            - 🎨 **Logo DUH! FILM & PHOTO:** Integrado na barra inicial do launcher.
+            - 🎬 **Papéis de Parede de Cinema:** Galeria de filmes em alta resolução (1080p).
+            - 📡 **Auto-Update OTA:** Suporte a atualizações automáticas direto pela internet.
+          files: |
+            apks/ArcLauncher_Projector_Edition.apk
+            apks/*.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

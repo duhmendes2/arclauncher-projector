@@ -55,8 +55,8 @@ class BackAction extends Action<BackIntent> {
   Future<void> invoke(BackIntent intent) async {
     NavigatorState? navigator = Navigator.maybeOf(context);
 
-    if (navigator != null) {
-      navigator.maybePop();
+    if (navigator != null && navigator.canPop()) {
+      navigator.pop();
     }
     else {
       LauncherState state = context.read<LauncherState>();

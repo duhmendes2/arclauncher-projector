@@ -409,11 +409,16 @@ public class MainActivity extends FlutterActivity {
                 return true;
             }
         } catch (Exception ignored) {}
-        return false;
+        runOnUiThread(() -> android.widget.Toast.makeText(this, "Abrindo Ajustes do Projetor...", android.widget.Toast.LENGTH_SHORT).show());
+        return launchActivityFromAction(Settings.ACTION_SETTINGS);
     }
 
     private boolean openAccessibilitySettings() {
-        return launchActivityFromAction(Settings.ACTION_ACCESSIBILITY_SETTINGS);
+        Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
+        if (tryStartActivity(intent)) {
+            return true;
+        }
+        return launchActivityFromAction(Settings.ACTION_SETTINGS);
     }
 
     @Override

@@ -10,6 +10,7 @@ import 'daily_wifi_usage_widget.dart';
 import 'date_time_widget.dart';
 import 'movie_wallpapers_dialog.dart';
 import 'network_widget.dart';
+import 'projector_menu_dialog.dart';
 import 'sleep_timer_dialog.dart';
 import 'weather_widget.dart';
 
@@ -95,6 +96,7 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar>
               // Settings button
               _FocusableIconButton(
                 icon: Icons.settings_outlined,
+                label: 'Ajustes',
                 focusNode: _settingsFocusNode,
                 onPressed: () => showDialog(context: context, builder: (_) => const SettingsPanel()),
               ),
@@ -102,6 +104,7 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar>
               // Movie Wallpapers (Cinema)
               _FocusableIconButton(
                 icon: Icons.movie_filter_rounded,
+                label: 'Cinema',
                 color: Colors.amberAccent,
                 onPressed: () => showDialog(
                   context: context,
@@ -109,22 +112,15 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar>
                 ),
               ),
               const SizedBox(width: 8),
-              // Projector Keystone / Display Calibration
+              // Central do Projetor (Keystone, HDMI, Home, Boot)
               _FocusableIconButton(
-                icon: Icons.aspect_ratio_rounded,
-                onPressed: () => FLauncherChannel().openProjectorSettings(),
-              ),
-              const SizedBox(width: 8),
-              // HDMI / TV Inputs
-              _FocusableIconButton(
-                icon: Icons.input_rounded,
-                onPressed: () => FLauncherChannel().openTvInputs(),
-              ),
-              const SizedBox(width: 8),
-              // Bluetooth Settings
-              _FocusableIconButton(
-                icon: Icons.bluetooth_rounded,
-                onPressed: () => FLauncherChannel().openBluetoothSettings(),
+                icon: Icons.tv_rounded,
+                label: 'Projetor',
+                color: Colors.lightGreenAccent,
+                onPressed: () => showDialog(
+                  context: context,
+                  builder: (_) => const ProjectorMenuDialog(),
+                ),
               ),
               const SizedBox(width: 8),
               // Sleep Timer button with live remaining time badge
@@ -138,12 +134,6 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar>
                     builder: (_) => const SleepTimerDialog(),
                   ),
                 ),
-              ),
-              const SizedBox(width: 8),
-              // Home Button Override / Accessibility Settings
-              _FocusableIconButton(
-                icon: Icons.home_repair_service_rounded,
-                onPressed: () => FLauncherChannel().openAccessibilitySettings(),
               ),
               const SizedBox(width: 14),
               // Network indicator (conditionally shown)

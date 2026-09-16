@@ -115,7 +115,8 @@
         <service
             android:name=".ProjectorAccessibilityService"
             android:exported="true"
-            android:label="Arc Launcher Home Override"
+            android:label="@string/accessibility_service_name"
+            android:description="@string/accessibility_service_description"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
             <intent-filter>
                 <action android:name="android.accessibilityservice.AccessibilityService" />

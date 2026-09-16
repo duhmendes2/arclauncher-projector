@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Arc Launcher</string>
+    <string name="accessibility_service_name">Arc Launcher - Controle do Botão Home</string>
+    <string name="accessibility_service_description">Permite que o Arc Launcher controle o botão Home e impeça o projetor de voltar para a tela de fábrica (Whale TV / Zeasn).</string>
+</resources>

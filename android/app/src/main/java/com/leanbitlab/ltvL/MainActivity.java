@@ -421,10 +421,6 @@ public class MainActivity extends FlutterActivity {
         return launchActivityFromAction(Settings.ACTION_SETTINGS);
     }
 
-    private boolean openWifiSettings() {
-        return launchActivityFromAction(Settings.ACTION_WIFI_SETTINGS);
-    }
-
     private boolean openBluetoothSettings() {
         return launchActivityFromAction(Settings.ACTION_BLUETOOTH_SETTINGS);
     }

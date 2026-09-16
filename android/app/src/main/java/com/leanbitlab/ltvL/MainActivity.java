@@ -145,7 +145,11 @@ public class MainActivity extends FlutterActivity {
                     int brightness = call.argument("brightness");
                     result.success(setSystemBrightness(brightness));
                 }
-                case "openWifiSettings" -> result.success(openWifiSettings());
+                                case "openWifiSettings" -> result.success(openWifiSettings());
+                case "openBluetoothSettings" -> result.success(openBluetoothSettings());
+                case "openProjectorSettings" -> result.success(openProjectorSettings());
+                case "openTvInputs" -> result.success(openTvInputs());
+                case "openAccessibilitySettings" -> result.success(openAccessibilitySettings());
                 case "getMediaStoreImages" -> result.success(getMediaStoreImages());
                 case "getMediaStoreVideos" -> result.success(getMediaStoreVideos());
                 case "getMediaStoreVideoThumbnail" -> {

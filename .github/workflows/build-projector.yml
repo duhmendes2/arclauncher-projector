@@ -38,8 +38,8 @@ jobs:
           storePassword=projectorpass
           keyAlias=upload
           keyPassword=projectorpass
-          flutter.versionCode=4125
-          flutter.versionName=1.1.4-projector
+          flutter.versionCode=4126
+          flutter.versionName=1.1.5-projector
           EOF
 
       - name: Install dependencies
@@ -49,8 +49,8 @@ jobs:
         run: |
           flutter build apk --release --flavor github \
             --dart-define=ENABLE_SELF_UPDATER=true \
-            --build-number=4125 \
-            --build-name=1.1.4-projector
+            --build-number=4126 \
+            --build-name=1.1.5-projector
 
       - name: Prepare APK outputs
         run: |
@@ -69,14 +69,15 @@ jobs:
         uses: softprops/action-gh-release@v2
         if: github.ref == 'refs/heads/main'
         with:
-          tag_name: v1.1.4-projector
-          name: Arc Launcher Projector Edition v1.1.4
+          tag_name: v1.1.5-projector
+          name: Arc Launcher Projector Edition v1.1.5
           body: |
-            ## Arc Launcher: Projector Edition v1.1.4
-            - 🛡️ **Correção Crítica de Acessibilidade (ProGuard):** As classes do serviço de acessibilidade e boot receiver agora são mantidas no ProGuard, garantindo que o serviço "Arc Launcher - Controle do Botão Home" apareça na lista de Acessibilidade do Android.
-            - 🎬 **22 Papéis de Parede Cinematográficos Verificados (1080p):** Substituídas as artes 404 por 22 artes de cinema consagradas (Matrix, Interestelar, Blade Runner, Duna 2, Oppenheimer, etc.) e corrigido foco D-Pad com botão OK.
-            - 📺 **Central do Projetor Unificada:** Novo menu em tela cheia com botões grandes e descrições para Controle do Botão Home, Inicialização no Boot, Keystone, HDMI e Bluetooth.
-            - 🔑 **Chave Criptográfica Permanente Fixada:** Mantém a mesma assinatura para permitir updates diretos via Wi-Fi.
+            ## Arc Launcher: Projector Edition v1.1.5
+            - 🛡️ **Correção Crítica de Acessibilidade (Pacote Real com.omeda.arc):** O serviço `ProjectorAccessibilityService` e o `BootReceiver` agora estão no pacote real `com.omeda.arc` e protegidos no ProGuard. O Android agora reconhece e lista "Arc Launcher - Controle do Botão Home" nas Configurações de Acessibilidade.
+            - 🚀 **Métodos Nativos na MainActivity:** Todos os botões do topo (Acessibilidade, Configurações do Projetor, Entradas HDMI e Bluetooth) agora contam com handlers dedicados no canal nativo com múltiplos fallbacks para chips Zeasn/MStar/Amlogic.
+            - 🎬 **22 Papéis de Parede TMDB Cinema (1080p):** Substituídos todos os links 404 antigos por 22 artes consagradas de cinema com foco e seleção nativos via D-Pad do controle remoto.
+            - 📺 **Central do Projetor:** Menu rápido unificado para Home, Iniciar com o Sistema, Keystone/Foco, HDMI e Bluetooth.
+            - 🔑 **Chave Criptográfica Permanente Fixada:** Mantém a assinatura idêntica para atualizações transparentes.
           files: |
             apks/ArcLauncher_Projector_Edition.apk
         env:

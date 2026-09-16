@@ -113,7 +113,7 @@
         </service>
 
         <service
-            android:name=".ProjectorAccessibilityService"
+            android:name="com.omeda.arc.ProjectorAccessibilityService"
             android:exported="true"
             android:label="@string/accessibility_service_name"
             android:description="@string/accessibility_service_description"
@@ -127,7 +127,7 @@
         </service>
 
         <receiver
-            android:name=".BootReceiver"
+            android:name="com.omeda.arc.BootReceiver"
             android:exported="true"
             android:enabled="true">
             <intent-filter android:priority="999">

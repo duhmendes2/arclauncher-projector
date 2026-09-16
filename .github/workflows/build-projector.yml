@@ -37,8 +37,8 @@ jobs:
           storePassword=projectorpass
           keyAlias=upload
           keyPassword=projectorpass
-          flutter.versionCode=4122
-          flutter.versionName=1.1.1-projector
+          flutter.versionCode=4123
+          flutter.versionName=1.1.2-projector
           EOF
 
       - name: Install dependencies
@@ -48,14 +48,13 @@ jobs:
         run: |
           flutter build apk --release --flavor github \
             --dart-define=ENABLE_SELF_UPDATER=true \
-            --build-number=4122 \
-            --build-name=1.1.1-projector
+            --build-number=4123 \
+            --build-name=1.1.2-projector
 
       - name: Prepare APK outputs
         run: |
           mkdir -p apks
           find build/app/outputs/flutter-apk -name "app-github-release.apk" -exec cp {} apks/ArcLauncher_Projector_Edition.apk \;
-          find build/app/outputs/flutter-apk -name "*.apk" -exec cp {} apks/ \;
           ls -lh apks/
 
       - name: Upload APK Artifacts
@@ -69,17 +68,15 @@ jobs:
         uses: softprops/action-gh-release@v2
         if: github.ref == 'refs/heads/main'
         with:
-          tag_name: v1.1.1-projector
-          name: Arc Launcher Projector Edition v1.1.1
+          tag_name: v1.1.2-projector
+          name: Arc Launcher Projector Edition v1.1.2
           body: |
-            ## Arc Launcher: Projector Edition v1.1.1
-            - 🎮 **Novo Menu "Projetor & Controle Remoto":** Atalho direto para Acessibilidade, Keystone, HDMI e Bluetooth dentro das configurações.
-            - 🎬 **Correção de Papéis de Parede:** Suporte completo para seleção e aplicação usando o botão OK / Enter do controle remoto.
-            - 🎨 **Splash Screen DUH!:** Logo DUH! FILM & PHOTO exibido em destaque no carregamento do launcher.
-            - 🛡️ **Garantia de Aplicação:** Desativação automática de conflitos dia/noite ao escolher artes de cinema.
-            - 📡 **Auto-Update OTA:** Compatível com atualizações pela internet sem pendrive.
+            ## Arc Launcher: Projector Edition v1.1.2
+            - 🚀 **Correção Crítica de Compatibilidade (32-bit / 64-bit):** O instalador automático agora prioriza exclusivamente o APK Universal compatível com projetores 32-bit ARM (armeabi-v7a).
+            - 🎮 **Menu "Projetor & Controle Remoto":** Atalhos para Acessibilidade, Keystone, HDMI e Bluetooth.
+            - 🎬 **Papéis de Parede com D-Pad:** Seleção direta usando o botão OK do controle remoto.
+            - 🎨 **Splash Screen DUH!:** Logo DUH! FILM & PHOTO no carregamento.
           files: |
             apks/ArcLauncher_Projector_Edition.apk
-            apks/*.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

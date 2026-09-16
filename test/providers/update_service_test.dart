@@ -8,16 +8,39 @@ void main() {
       expect(isAbiSplitApk("arclauncher-1.0.5-armeabi-v7a.apk"), isTrue);
       expect(isAbiSplitApk("arclauncher-1.0.5-x86_64.apk"), isTrue);
       expect(isAbiSplitApk("arclauncher-1.0.5-x86.apk"), isTrue);
+      expect(isAbiSplitApk("app-arm64-v8a-github-release.apk"), isTrue);
+      expect(isAbiSplitApk("app-armeabi-v7a-github-release.apk"), isTrue);
     });
 
     test("treats universal assets as non-split", () {
       expect(isAbiSplitApk("arclauncher-1.0.5.apk"), isFalse);
       expect(isAbiSplitApk("arclauncher.apk"), isFalse);
       expect(isAbiSplitApk("arc-launcher-universal-release.apk"), isFalse);
+      expect(isAbiSplitApk("ArcLauncher_Projector_Edition.apk"), isFalse);
     });
   });
 
   group("pickReleaseApk", () {
+    test("prioritizes ArcLauncher_Projector_Edition.apk", () {
+      final picked = pickReleaseApk([
+        {
+          "name": "app-arm64-v8a-github-release.apk",
+          "browser_download_url": "https://example.com/arm64.apk",
+        },
+        {
+          "name": "ArcLauncher_Projector_Edition.apk",
+          "browser_download_url": "https://example.com/projector.apk",
+        },
+        {
+          "name": "arclauncher-1.0.5.apk",
+          "browser_download_url": "https://example.com/universal.apk",
+        },
+      ]);
+
+      expect(picked?.name, "ArcLauncher_Projector_Edition.apk");
+      expect(picked?.url, "https://example.com/projector.apk");
+    });
+
     test("prefers universal APK over ABI splits", () {
       final picked = pickReleaseApk([
         {

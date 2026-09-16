@@ -30,13 +30,13 @@ class DownloadedApk {
   const DownloadedApk({required this.path, required this.version});
 }
 
-/// ABI-split APKs are named like `arclauncher-1.0.5-arm64-v8a.apk`.
-/// Universal builds omit the ABI suffix (`arclauncher-1.0.5.apk`).
+/// ABI-split APKs are named like `arclauncher-1.0.5-arm64-v8a.apk` or `app-arm64-v8a-github-release.apk`.
+/// Universal builds omit the ABI suffix or are named `ArcLauncher_Projector_Edition.apk`.
 bool isAbiSplitApk(String name) {
-  return RegExp(
-    r"-(arm64-v8a|armeabi-v7a|armeabi|x86_64|x86)\.apk$",
-    caseSensitive: false,
-  ).hasMatch(name);
+  final lower = name.toLowerCase();
+  return lower.contains('arm64') ||
+      lower.contains('armeabi') ||
+      lower.contains('x86');
 }
 
 /// Prefers a universal APK asset; falls back to the first APK if none match.
@@ -44,6 +44,19 @@ bool isAbiSplitApk(String name) {
   String? fallbackName;
   String? fallbackUrl;
 
+  // 1. Prioritize explicit projector universal build
+  for (final asset in assets) {
+    if (asset is! Map) continue;
+    final name = asset["name"];
+    final downloadUrl = asset["browser_download_url"];
+    if (name is! String || downloadUrl is! String) continue;
+
+    if (name == "ArcLauncher_Projector_Edition.apk") {
+      return (name: name, url: downloadUrl);
+    }
+  }
+
+  // 2. Prioritize non-split universal APK
   for (final asset in assets) {
     if (asset is! Map) {
       continue;

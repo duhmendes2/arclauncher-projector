@@ -1,4 +1,4 @@
-﻿import 'dart:typed_data';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
@@ -139,18 +139,15 @@ class _MovieWallpapersDialogState extends State<MovieWallpapersDialog> {
                 TextButton.icon(
                   icon: const Icon(Icons.folder_open_rounded, size: 18),
                   label: const Text('Do Pendrive / PC'),
-                  onPressed: () {
+                  onPressed: () async {
                     Navigator.of(context).pop();
-                    showDialog(
-                      context: context,
-                      builder: (_) => TvMediaPicker(
-                        title: 'Selecionar Imagem do Pendrive',
-                        mediaType: TvMediaType.image,
-                        onMediaSelected: (file) {
-                          context.read<WallpaperService>().pickWallpaper(file);
-                        },
-                      ),
+                    final media = await TvMediaPicker.show(
+                      context,
+                      mode: TvMediaPickerMode.image,
                     );
+                    if (media != null && context.mounted) {
+                      await context.read<WallpaperService>().pickWallpaperFromUri(media.uri);
+                    }
                   },
                 ),
                 IconButton(

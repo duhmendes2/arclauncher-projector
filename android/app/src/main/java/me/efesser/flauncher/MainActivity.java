@@ -127,6 +127,9 @@ public class MainActivity extends FlutterActivity {
                     result.success(null);
                 }
                 case "openWifiSettings" -> result.success(openWifiSettings());
+                case "openBluetoothSettings" -> result.success(openBluetoothSettings());
+                case "openProjectorSettings" -> result.success(openProjectorSettings());
+                case "openTvInputs" -> result.success(openTvInputs());
                 default -> throw new IllegalArgumentException();
             }
         });
@@ -354,6 +357,58 @@ public class MainActivity extends FlutterActivity {
 
     private boolean openSettings() {
         return launchActivityFromAction(Settings.ACTION_SETTINGS);
+    }
+
+    private boolean openBluetoothSettings() {
+        return launchActivityFromAction(Settings.ACTION_BLUETOOTH_SETTINGS);
+    }
+
+    private boolean openProjectorSettings() {
+        String[][] candidates = new String[][]{
+            {"com.android.tv.settings", "com.android.tv.settings.display.DisplayActivity"},
+            {"com.android.tv.settings", "com.android.tv.settings.device.display.DisplayActivity"},
+            {"com.whaletv.settings", "com.whaletv.settings.MainActivity"},
+            {"com.zeasn.whale.settings", "com.zeasn.whale.settings.MainActivity"},
+            {"com.softwinner.tv.settings", "com.softwinner.tv.settings.DisplaySettingsActivity"},
+            {"com.mstar.tv.setting", "com.mstar.tv.setting.MainActivity"},
+            {"com.android.settings", "com.android.settings.Settings$DisplaySettingsActivity"}
+        };
+        for (String[] candidate : candidates) {
+            try {
+                Intent intent = new Intent();
+                intent.setComponent(new android.content.ComponentName(candidate[0], candidate[1]));
+                if (tryStartActivity(intent)) {
+                    return true;
+                }
+            } catch (Exception ignored) {}
+        }
+        return launchActivityFromAction(Settings.ACTION_DISPLAY_SETTINGS);
+    }
+
+    private boolean openTvInputs() {
+        String[][] candidates = new String[][]{
+            {"com.mstar.tv.tvapp", "com.mstar.tv.tvapp.ui.MainActivity"},
+            {"com.google.android.tv", "com.google.android.tv.MainActivity"},
+            {"com.android.tv", "com.android.tv.MainActivity"},
+            {"com.whaletv.tv", "com.whaletv.tv.MainActivity"}
+        };
+        for (String[] candidate : candidates) {
+            try {
+                Intent intent = new Intent();
+                intent.setComponent(new android.content.ComponentName(candidate[0], candidate[1]));
+                if (tryStartActivity(intent)) {
+                    return true;
+                }
+            } catch (Exception ignored) {}
+        }
+        try {
+            Intent inputIntent = new Intent("android.intent.action.VIEW");
+            inputIntent.setData(Uri.parse("content://android.media.tv/passthrough"));
+            if (tryStartActivity(inputIntent)) {
+                return true;
+            }
+        } catch (Exception ignored) {}
+        return false;
     }
 
     private boolean installApk(String apkPath) {

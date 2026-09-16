@@ -1,0 +1,65 @@
+﻿name: Build Projector APK
+
+on:
+  push:
+    branches:
+      - '**'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.41.9"
+          channel: stable
+          cache: true
+
+      - name: Generate Signing Keystore
+        run: |
+          keytool -genkey -v -keystore android/app/upload-keystore.jks \
+            -alias upload -keyalg RSA -keysize 2048 -validity 10000 \
+            -storepass projectorpass -keypass projectorpass \
+            -dname "CN=ProjectorEdition, OU=Dev, O=DuhMendes, L=SP, S=SP, C=BR"
+          cat <<EOF > android/local.properties
+          storeFile=upload-keystore.jks
+          storePassword=projectorpass
+          keyAlias=upload
+          keyPassword=projectorpass
+          flutter.versionCode=4120
+          flutter.versionName=1.0.8-projector
+          EOF
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build APKs
+        run: |
+          flutter build apk --release --flavor github \
+            --dart-define=ENABLE_SELF_UPDATER=false \
+            --build-number=4120 \
+            --build-name=1.0.8-projector
+
+      - name: Prepare APK outputs
+        run: |
+          mkdir -p apks
+          find build/app/outputs/flutter-apk -name "*.apk" -exec cp {} apks/ \;
+          ls -lh apks/
+
+      - name: Upload APK Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: arclauncher-projector-apks
+          path: apks/*.apk
+          retention-days: 7

@@ -194,4 +194,26 @@ class FLauncherChannel {
       return Uint8List(0);
     }
   }
+
+  Future<void> openBluetoothSettings() async {
+    try {
+      await _methodChannel.invokeMethod('openBluetoothSettings');
+    } catch (_) {
+      await launchActivityFromAction('android.settings.BLUETOOTH_SETTINGS');
+    }
+  }
+
+  Future<void> openProjectorSettings() async {
+    try {
+      await _methodChannel.invokeMethod('openProjectorSettings');
+    } catch (_) {
+      await launchActivityFromAction('android.settings.DISPLAY_SETTINGS');
+    }
+  }
+
+  Future<void> openTvInputs() async {
+    try {
+      await _methodChannel.invokeMethod('openTvInputs');
+    } catch (_) {}
+  }
 }

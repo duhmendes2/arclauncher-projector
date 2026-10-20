@@ -64,27 +64,15 @@ jobs:
         uses: softprops/action-gh-release@v2
         if: github.ref == 'refs/heads/main'
         with:
-          tag_name: v2.0.0-projector-native
-          name: Arc Launcher Projector Edition v2.0 (Native Ultra-Fast)
+          tag_name: v2.0.1-projector-native
+          name: Arc Launcher Projector Edition v2.0.1 (Local Wallpaper Picker)
           body: |
-            ## 🚀 Arc Launcher Projector Edition v2.0 (Native Engine)
+            ## 🚀 Arc Launcher Projector Edition v2.0.1
             
-            Atualização definitiva de altíssimo desempenho baseada no motor nativo ultra-leve do CleanYourTV adaptado para Projetores Android.
-            
-            ### ⚡ Principais Ganhos de Performance:
-            - **Tamanho Reduzido em 99%:** De ~62 MB (Flutter) para **~400 KB** (Java/Views nativas).
-            - **Memória RAM Liberada:** Queda de ~120 MB para **~20 MB** de uso de RAM no sistema.
-            - **Retorno Instantâneo ao Pressionar Home:** O sistema operacional não encerra mais o launcher por falta de memória RAM ao alternar entre apps pesados (YouTube, Netflix, SmartTube).
-            - **Navegação Ultra-Fluida:** D-Pad a 60 FPS com físicas de mola e highlight de vidro flutuante (*GlassView*).
-            
-            ### 🎬 Recursos Preservados & Novos:
-            - **Top Shelf com Ambient Glow Dinâmico:** O topo exibe o nome do app em destaque e reflete um halo luminoso suave com a cor extraída do ícone de cada app.
-            - **22 Papéis de Parede TMDB Cinema (1080p):** Seletor nativo integrado direto nas configurações com opção de download imediato ou rotação automática periódica em segundo plano.
-            - **Ajustes Rápidos do Projetor:** Atalhos diretos para Keystone, Foco e Calibração de Tela com fallbacks dedicados para chips MStar, Amlogic, Softwinner, Zeasn e WhaleTV.
-            - **Entradas de Vídeo (HDMI):** Seletor rápido de HDMI 1, HDMI 2, AV e entradas de TV.
-            - **Telemetria na Tela Inicial:** Monitor discreto abaixo do relógio exibindo CPU, Memória RAM Livre e Armazenamento em tempo real.
-            - **Auto-Boot & Captura do Botão Home:** Inicia automaticamente ao ligar o projetor (`BootReceiver` e `HomeKeyService`).
-            - **Assinatura Oficial Mantida:** Compilado e assinado com a mesma chave criptográfica permanente para atualização direta sem desinstalar.
+            ### 🆕 Novidades desta versão:
+            - 📂 **Seletor de Papel de Parede Local / Pendrive:** Adicionado suporte nativo para selecionar e aplicar qualquer imagem armazenada na memória interna do projetor (`Pictures`, `Download`, `DCIM`, `Projetor`) ou em Pendrives USB, além de suporte para abrir o Gerenciador de Arquivos do sistema.
+            - 🎬 **Catálogo TMDB 1080p Integrado:** 22 backdrops cinematográficos disponíveis para download imediato ou rotação automática.
+            - ⚡ **Desempenho Extremo:** APK de apenas ~430 KB com consumo de ~20 MB de RAM.
           files: |
             apks/ArcLauncher_Projector_Native_v2.0.apk
             apks/ArcLauncher_Projector_Edition.apk

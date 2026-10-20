@@ -5,17 +5,26 @@ import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.Settings;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /** Remote-friendly settings owned by the launcher; system settings stay one row away. */
 public final class LauncherSettingsActivity extends Activity {
+    private static final int REQUEST_PICK_IMAGE = 1010;
+
     private SharedPreferences choices;
     private final TextView[] columnChoices = new TextView[4];
     private final TextView[] rowChoices = new TextView[4];
@@ -71,6 +80,8 @@ public final class LauncherSettingsActivity extends Activity {
         }
         wallpaperChoice = findViewById(R.id.wallpaperChoice);
         wallpaperChoice.setOnClickListener(v -> showWallpaperPicker());
+
+        findViewById(R.id.pickLocalWallpaperChoice).setOnClickListener(v -> showLocalImagePicker());
 
         findViewById(R.id.cinemaWallpaperChoice).setOnClickListener(v ->
                 CinemaWallpapers.showCinemaPicker(this, () -> {
@@ -134,30 +145,35 @@ public final class LauncherSettingsActivity extends Activity {
 
     private void showWallpaperPicker() {
         File dir = Config.dir(this);
-        List<File> images = new java.util.ArrayList<>(WallpaperRotation.images(
+        List<File> images = new ArrayList<>(WallpaperRotation.images(
                 dir == null ? null : new File(dir, "wallpapers")));
-        // A theme with a single wallpaper.jpg offers that picture too (Config maps the choice back to it).
         File single = dir == null ? null : new File(dir, Config.WALLPAPER_NAME);
         if (single != null && single.isFile()) images.add(0, single);
-        String[] labels = new String[images.size() + 1];
-        for (int i = 0; i < images.size(); i++) labels[i] = images.get(i).getName();
-        labels[images.size()] = getString(R.string.wallpaper_none);
+        String[] labels = new String[images.size() + 2];
+        labels[0] = "📂 Escolher da Memória / Pendrive...";
+        for (int i = 0; i < images.size(); i++) labels[i + 1] = images.get(i).getName();
+        labels[images.size() + 1] = getString(R.string.wallpaper_none);
         String current = choices.getString(Config.WALLPAPER_CHOICE_KEY, null);
-        int checked = "none".equals(current) ? images.size()
-                : indexOf(images, current);
+        int checked = "none".equals(current) ? images.size() + 1
+                : (indexOf(images, current) >= 0 ? indexOf(images, current) + 1 : -1);
         new AlertDialog.Builder(this)
                 .setTitle(R.string.wallpaper_label)
                 .setSingleChoiceItems(labels, checked, (dialog, which) -> {
                     dialog.dismiss();
-                    if (which == images.size()) {
+                    if (which == 0) {
+                        showLocalImagePicker();
+                    } else if (which == images.size() + 1) {
                         choices.edit().putString(Config.WALLPAPER_CHOICE_KEY, "none").apply();
+                        setResult(RESULT_OK);
+                        Toast.makeText(this, R.string.wallpaper_applied, Toast.LENGTH_SHORT).show();
+                        refresh();
                     } else {
                         choices.edit().putString(Config.WALLPAPER_CHOICE_KEY,
-                                images.get(which).getName()).apply();
+                                images.get(which - 1).getName()).apply();
+                        setResult(RESULT_OK);
+                        Toast.makeText(this, R.string.wallpaper_applied, Toast.LENGTH_SHORT).show();
+                        refresh();
                     }
-                    setResult(RESULT_OK);
-                    Toast.makeText(this, R.string.wallpaper_applied, Toast.LENGTH_SHORT).show();
-                    refresh();
                 })
                 .setNeutralButton(R.string.wallpaper_theme_default, (dialog, which) -> {
                     choices.edit().remove(Config.WALLPAPER_CHOICE_KEY).apply();
@@ -166,6 +182,145 @@ public final class LauncherSettingsActivity extends Activity {
                 })
                 .setNegativeButton(android.R.string.cancel, null)
                 .show();
+    }
+
+    private void showLocalImagePicker() {
+        List<File> localImages = scanLocalImages();
+        String[] options = new String[localImages.size() + 1];
+        options[0] = "📂 Abrir Gerenciador de Arquivos do Sistema...";
+        for (int i = 0; i < localImages.size(); i++) {
+            File f = localImages.get(i);
+            String parent = f.getParentFile() != null ? f.getParentFile().getName() : "";
+            options[i + 1] = "[" + parent + "] " + f.getName();
+        }
+
+        new AlertDialog.Builder(this)
+                .setTitle("Imagens na Memória do Projetor")
+                .setItems(options, (dialog, which) -> {
+                    dialog.dismiss();
+                    if (which == 0) {
+                        launchSystemImagePicker();
+                    } else {
+                        applyLocalFileWallpaper(localImages.get(which - 1));
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel, null)
+                .show();
+    }
+
+    private void launchSystemImagePicker() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("image/*");
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        try {
+            startActivityForResult(Intent.createChooser(intent, "Escolher Papel de Parede"), REQUEST_PICK_IMAGE);
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(this, "Nenhum seletor de arquivos encontrado", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_PICK_IMAGE && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            copyUriToWallpaper(data.getData());
+        }
+    }
+
+    private void copyUriToWallpaper(Uri uri) {
+        Toast.makeText(this, "Carregando imagem...", Toast.LENGTH_SHORT).show();
+        new Thread(() -> {
+            try (InputStream in = getContentResolver().openInputStream(uri)) {
+                File dir = Config.dir(this);
+                if (dir == null || in == null) return;
+                File target = new File(dir, Config.WALLPAPER_NAME);
+                try (FileOutputStream out = new FileOutputStream(target)) {
+                    byte[] buf = new byte[8192];
+                    int len;
+                    while ((len = in.read(buf)) > 0) out.write(buf, 0, len);
+                    out.flush();
+                }
+                runOnUiThread(() -> {
+                    choices.edit().putString(Config.WALLPAPER_CHOICE_KEY, Config.WALLPAPER_NAME).apply();
+                    setResult(RESULT_OK);
+                    Toast.makeText(this, "🎬 Papel de parede aplicado!", Toast.LENGTH_SHORT).show();
+                    refresh();
+                });
+            } catch (Exception e) {
+                runOnUiThread(() -> Toast.makeText(this, "Erro ao abrir imagem selecionada.", Toast.LENGTH_SHORT).show());
+            }
+        }).start();
+    }
+
+    private List<File> scanLocalImages() {
+        List<File> result = new ArrayList<>();
+        List<File> searchDirs = new ArrayList<>();
+
+        File ext = Environment.getExternalStorageDirectory();
+        if (ext != null && ext.exists()) {
+            searchDirs.add(new File(ext, "Pictures"));
+            searchDirs.add(new File(ext, "Download"));
+            searchDirs.add(new File(ext, "Projetor"));
+            searchDirs.add(new File(ext, "DCIM"));
+            searchDirs.add(new File(ext, "DCIM/Screenshots"));
+            searchDirs.add(ext);
+        }
+
+        File storageRoot = new File("/storage");
+        if (storageRoot.exists() && storageRoot.isDirectory()) {
+            File[] drives = storageRoot.listFiles();
+            if (drives != null) {
+                for (File d : drives) {
+                    if (d.isDirectory() && !d.getName().equals("emulated") && !d.getName().equals("self")) {
+                        searchDirs.add(d);
+                        searchDirs.add(new File(d, "Pictures"));
+                        searchDirs.add(new File(d, "wallpapers"));
+                    }
+                }
+            }
+        }
+
+        for (File dir : searchDirs) {
+            if (dir.exists() && dir.isDirectory()) {
+                File[] files = dir.listFiles();
+                if (files != null) {
+                    for (File f : files) {
+                        String name = f.getName().toLowerCase();
+                        if (f.isFile() && f.length() > 0 && (name.endsWith(".jpg") || name.endsWith(".jpeg")
+                                || name.endsWith(".png") || name.endsWith(".webp"))) {
+                            result.add(f);
+                            if (result.size() >= 50) break;
+                        }
+                    }
+                }
+            }
+            if (result.size() >= 50) break;
+        }
+        return result;
+    }
+
+    private void applyLocalFileWallpaper(File source) {
+        new Thread(() -> {
+            try (InputStream in = new FileInputStream(source)) {
+                File dir = Config.dir(this);
+                if (dir == null) return;
+                File target = new File(dir, Config.WALLPAPER_NAME);
+                try (FileOutputStream out = new FileOutputStream(target)) {
+                    byte[] buf = new byte[8192];
+                    int len;
+                    while ((len = in.read(buf)) > 0) out.write(buf, 0, len);
+                    out.flush();
+                }
+                runOnUiThread(() -> {
+                    choices.edit().putString(Config.WALLPAPER_CHOICE_KEY, Config.WALLPAPER_NAME).apply();
+                    setResult(RESULT_OK);
+                    Toast.makeText(this, "🎬 Papel de parede aplicado!", Toast.LENGTH_SHORT).show();
+                    refresh();
+                });
+            } catch (Exception e) {
+                runOnUiThread(() -> Toast.makeText(this, "Erro ao copiar imagem.", Toast.LENGTH_SHORT).show());
+            }
+        }).start();
     }
 
     private static int indexOf(List<File> images, String name) {

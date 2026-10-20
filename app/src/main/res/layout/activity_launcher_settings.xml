@@ -68,6 +68,12 @@
             android:layout_marginTop="28dp" />
 
         <TextView
+            android:id="@+id/pickLocalWallpaperChoice"
+            style="@style/SettingsRow"
+            android:layout_marginTop="10dp"
+            android:text="📂 Escolher da Memória Interna / Pendrive" />
+
+        <TextView
             android:id="@+id/cinemaWallpaperChoice"
             style="@style/SettingsRow"
             android:layout_marginTop="10dp"

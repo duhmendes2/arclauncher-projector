@@ -30,18 +30,25 @@ Documento de consulta rápida para manutenção, compilação e deploy do launch
 * **Branch Principal Atual (Nativa v2.0):** `main`
 * **Branch Legada (Flutter v1.1.5):** `flutter-legacy`
 * **Nome do Pacote / Application ID:** `com.omeda.arc`
-* **Versão Atual:** `2.0.0-projector` (VersionCode: `4200`)
+* **Versão Atual:** `2.1.0-projector` (VersionCode: `4202`)
 * **Chave Criptográfica Permanente:**
   * Caminho: `app/upload-keystore.jks`
   * Senha da Keystore: `projectorpass`
   * Alias da Chave: `upload`
   * Senha da Chave: `projectorpass`
 * **Pasta de Saída dos APKs Locais:** `D:\IA\MCP\arclauncher\release_apks\`
-* **APK Atual de Alta Performance:** `ArcLauncher_Projector_Native_v2.0.apk` (~427 KB)
+* **APK Atual de Alta Performance:** `ArcLauncher_Projector_Native_v2.1.0.apk` (~441 KB)
 
 ---
 
 ### 🛠️ Recursos de Hardware do Projetor Integrados no Código
+* **🎯 Grade de Calibração de Foco & Keystone (`CalibrationActivity`):** Padrão de precisão em 16:9, marcas nos 4 cantos para keystone e miras de foco óptico para nitidez de lente.
+* **⏱️ Sleep Timer (`SleepTimer`):** Desligamento/suspensão automática em 15, 30, 45, 60, 90 ou 120 minutos com monitoramento em tempo real.
+* **📻 Modo Apenas Áudio / Tela Apagada (`ScreenOffActivity`):** Apaga o feixe de projeção e mantém Spotify/Bluetooth tocando em segundo plano.
+* **🌙 Protetor de Tela Integrado (`ScreensaverActivity`):** Relógio minimalista flutuante anti-burnin e slideshow de pôsteres de cinema ativado por inatividade.
+* **🕶️ Dimmer de Cinema (Filtro Escuro):** Filtro de tela por software (20%, 40%, 60%) para quartos escuros.
+* **🚫 Gerenciador de Apps Ocultos (`AppHideActivity`):** Oculta aplicativos indesejados e bloatwares de fábrica da tela inicial.
+* **📂 Seletor de Wallpapers da Memória e Pendrive:** Navega em diretórios locais e pendrives USB para aplicar papéis de parede.
 * **Ajustes de Foco / Keystone:** Handlers com fallbacks para chips `com.whaletv.settings`, `com.zeasn.whale.settings`, `com.softwinner.tv.settings`, `com.mstar.tv.setting` e `com.android.tv.settings.display.DisplayActivity`.
 * **Entradas de Vídeo (HDMI 1 / HDMI 2 / AV):** `com.mstar.tv.tvapp`, `com.android.tv` e `content://android.media.tv/passthrough`.
 * **Captura do Botão Home & Auto-Start:** `BootReceiver` e `HomeKeyService` registrados para inicialização instantânea.

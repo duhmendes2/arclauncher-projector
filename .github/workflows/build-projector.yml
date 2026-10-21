@@ -64,16 +64,15 @@ jobs:
         uses: softprops/action-gh-release@v2
         if: github.ref == 'refs/heads/main'
         with:
-          tag_name: v2.1.5-projector-native
-          name: Arc Launcher Projector Edition v2.1.5 (Duh Mendes Brand & Cinematic Splash)
+          tag_name: v2.1.6-projector-native
+          name: Arc Launcher Projector Edition v2.1.6 (Logo Contorno Splash & Horizontal Borda Top)
           body: |
-            ## 🚀 Arc Launcher Projector Edition v2.1.5 (Duh Mendes Brand & Cinematic Splash)
+            ## 🚀 Arc Launcher Projector Edition v2.1.6 (Logo Contorno Splash & Horizontal Borda Top)
             
             ### 🆕 Novidades desta versão:
-            - 🌟 **Identidade Visual Oficial (Marca Duh Mendes):** Emblema horizontal branco em alta resolução integrado nativamente no topo esquerdo do launcher sobre o relógio.
-            - 🎬 **Splash Screen Cinematográfica de Abertura:** Apresentação de luxo ao inicializar o projetor com fundo preto absoluto e logo Duh Mendes com fade-in suave e escala sutil.
-            - 🌙 **Ícone Vetorial de Sleep (Flaticon 835503):** Lua crescente minimalista com ZZZ em 22dp no padrão da barra superior.
-            - 🔌 **Ponte de Hardware Nativa WhaleService (`com.zeasn.TV_SERVICE`):** Desligamento da lâmpada e do bloco óptico acionado diretamente no kernel Amlogic.
+            - 🌟 **Logo no Topo Oficial:** Aplicado `horizontal_original_borda.png` com escala automática e altura de 34dp no canto superior esquerdo do launcher.
+            - 🎬 **Splash Cinematográfica com Logo Contorno:** Apresentação de luxo no centro com `Logo Contorno.png` (260dp) com fade-in e escala sutil ao abrir o sistema.
+            - 🌙 **Ícone Vetorial Sleep (Flaticon 835503) & Desligamento Real de Hardware.**
           files: |
             apks/ArcLauncher_Projector_Native_v2.0.apk
             apks/ArcLauncher_Projector_Edition.apk

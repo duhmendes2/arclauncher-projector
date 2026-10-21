@@ -174,12 +174,13 @@
 
                 <ImageView
                     android:id="@+id/brandLogo"
-                    android:layout_width="140dp"
-                    android:layout_height="32dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="34dp"
+                    android:adjustViewBounds="true"
                     android:layout_marginStart="4dp"
                     android:layout_marginBottom="4dp"
                     android:scaleType="fitStart"
-                    android:src="@drawable/logo_brand_white"
+                    android:src="@drawable/logo_top_borda"
                     android:contentDescription="Duh Mendes" />
 
                 <!-- The header texts use gravity left, not start: the launcher lays out left to right
@@ -398,11 +399,12 @@
 
         <ImageView
             android:id="@+id/splashLogo"
-            android:layout_width="380dp"
-            android:layout_height="160dp"
+            android:layout_width="wrap_content"
+            android:layout_height="260dp"
+            android:adjustViewBounds="true"
             android:layout_gravity="center"
             android:scaleType="fitCenter"
-            android:src="@drawable/logo_brand_white"
+            android:src="@drawable/logo_splash_contorno"
             android:contentDescription="Duh Mendes" />
     </FrameLayout>
 </FrameLayout>

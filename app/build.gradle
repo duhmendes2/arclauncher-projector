@@ -10,8 +10,8 @@ android {
         applicationId providers.gradleProperty('launcherApplicationId').getOrElse('com.omeda.arc')
         minSdk 26
         targetSdk 34
-        versionCode 4203
-        versionName '2.1.1-projector'
+        versionCode 4204
+        versionName '2.1.2-projector'
     }
 
     signingConfigs {

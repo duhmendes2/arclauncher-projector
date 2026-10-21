@@ -64,15 +64,17 @@ jobs:
         uses: softprops/action-gh-release@v2
         if: github.ref == 'refs/heads/main'
         with:
-          tag_name: v2.1.1-projector-native
-          name: Arc Launcher Projector Edition v2.1.1 (Hardware Admin & Whale Unlocker)
+          tag_name: v2.1.2-projector-native
+          name: Arc Launcher Projector Edition v2.1.2 (Bettdow AC1066 Native Drivers)
           body: |
-            ## 🚀 Arc Launcher Projector Edition v2.1.1 (Hardware Admin & Whale Unlocker)
+            ## 🚀 Arc Launcher Projector Edition v2.1.2 (Bettdow AC1066 Native Drivers)
             
             ### 🆕 Novidades desta versão:
-            - ⚡ **Administrador de Dispositivo (Desligamento Real de Hardware):** Implementada a API de `DevicePolicyManager` para corte de vídeo e suspensão profunda no nível do kernel quando o Sleep Timer expira.
-            - 🔓 **Destravador de Sistema (Whale OS / Bettdow Unlocker):** Painel dedicado para abrir diretamente telas ocultas de Opções do Desenvolvedor, Sobre o Aparelho (AOSP nativo com 7 cliques), menus de fábrica (MStar/CVTE/Whale) e ativação de permissões de hardware sem precisar de controle numérico.
-            - 🔑 **Suporte Integrado a Accessibility Power:** Chamada nativa `performGlobalAction(GLOBAL_ACTION_LOCK_SCREEN)` pelo `HomeKeyService`.
+            - 🎯 **Integração de Drivers Nativos do Bettdow AC1066:** Acesso direto aos pacotes de hardware extraídos via ADB:
+              - `com.droidlogic.keystone`: Keystone digital oficial da placa Amlogic T5D
+              - `com.tpjz.vafocus`: Foco eletrônico e automático nativo do projetor
+              - `com.stellamore.bluetoothspeaker`: Modo Caixa de Som Bluetooth com tela apagada
+            - ⚡ **Permissões de Sistema Prontas para ADB:** `WRITE_SECURE_SETTINGS`, `DUMP` e `SYSTEM_ALERT_WINDOW`.
           files: |
             apks/ArcLauncher_Projector_Native_v2.0.apk
             apks/ArcLauncher_Projector_Edition.apk

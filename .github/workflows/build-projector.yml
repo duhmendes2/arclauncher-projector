@@ -64,15 +64,16 @@ jobs:
         uses: softprops/action-gh-release@v2
         if: github.ref == 'refs/heads/main'
         with:
-          tag_name: v2.1.4-projector-native
-          name: Arc Launcher Projector Edition v2.1.4 (Flaticon Sleep Icon & Native Hardware Sleep)
+          tag_name: v2.1.5-projector-native
+          name: Arc Launcher Projector Edition v2.1.5 (Duh Mendes Brand & Cinematic Splash)
           body: |
-            ## 🚀 Arc Launcher Projector Edition v2.1.4 (Flaticon Sleep Icon & Native Hardware Sleep)
+            ## 🚀 Arc Launcher Projector Edition v2.1.5 (Duh Mendes Brand & Cinematic Splash)
             
             ### 🆕 Novidades desta versão:
-            - 🌙 **Novo Ícone de Sleep Minimalista (Lua Crescente com ZZZ):** Substituído o ícone provisório e removidos emojis gigantes da barra superior. O ícone agora tem exatamente 22dp no padrão vetorial idêntico aos botões de Wi-Fi e Configurações.
-            - 🔌 **Ponte Direta com WhaleService / Amlogic (`com.zeasn.TV_SERVICE`):** O Sleep Timer agora conecta diretamente ao serviço nativo de hardware do sistema operacional (`com.droidlogic / WhaleService`), acionando o temporizador oficial do kernel que desliga a lâmpada/óptico do projetor.
-            - 🎯 **Controle D-Pad Aprimorado:** Presets rápidos e ajuste com as setas mantidos e otimizados.
+            - 🌟 **Identidade Visual Oficial (Marca Duh Mendes):** Emblema horizontal branco em alta resolução integrado nativamente no topo esquerdo do launcher sobre o relógio.
+            - 🎬 **Splash Screen Cinematográfica de Abertura:** Apresentação de luxo ao inicializar o projetor com fundo preto absoluto e logo Duh Mendes com fade-in suave e escala sutil.
+            - 🌙 **Ícone Vetorial de Sleep (Flaticon 835503):** Lua crescente minimalista com ZZZ em 22dp no padrão da barra superior.
+            - 🔌 **Ponte de Hardware Nativa WhaleService (`com.zeasn.TV_SERVICE`):** Desligamento da lâmpada e do bloco óptico acionado diretamente no kernel Amlogic.
           files: |
             apks/ArcLauncher_Projector_Native_v2.0.apk
             apks/ArcLauncher_Projector_Edition.apk

@@ -264,6 +264,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
 
     private TextView btnWifi;
     private TextView btnSleep;
+    private static boolean hasShownSplash = false;
 
     private TextView shamsiDate;
 
@@ -656,6 +657,32 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         btnSleep = findViewById(R.id.btnSleep);
         if (btnSleep != null) {
             btnSleep.setOnClickListener(v -> SleepTimer.showDialog(this, this::updateSleepButton));
+        }
+
+        View splashOverlay = findViewById(R.id.splashOverlay);
+        ImageView splashLogo = findViewById(R.id.splashLogo);
+        if (!hasShownSplash && splashOverlay != null && splashLogo != null) {
+            hasShownSplash = true;
+            splashOverlay.setVisibility(View.VISIBLE);
+            splashOverlay.setAlpha(1.0f);
+            splashLogo.setAlpha(0f);
+            splashLogo.setScaleX(0.90f);
+            splashLogo.setScaleY(0.90f);
+            splashLogo.animate()
+                    .alpha(1f)
+                    .scaleX(1.0f)
+                    .scaleY(1.0f)
+                    .setDuration(650)
+                    .withEndAction(() -> {
+                        splashOverlay.postDelayed(() -> {
+                            splashOverlay.animate()
+                                    .alpha(0f)
+                                    .setDuration(450)
+                                    .withEndAction(() -> splashOverlay.setVisibility(View.GONE))
+                                    .start();
+                        }, 400);
+                    })
+                    .start();
         }
 
         shamsiDate = findViewById(R.id.shamsiDate);

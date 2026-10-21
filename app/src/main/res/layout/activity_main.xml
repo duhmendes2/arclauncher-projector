@@ -172,6 +172,16 @@
                 android:layout_marginEnd="16dp"
                 android:orientation="vertical">
 
+                <ImageView
+                    android:id="@+id/brandLogo"
+                    android:layout_width="140dp"
+                    android:layout_height="32dp"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginBottom="4dp"
+                    android:scaleType="fitStart"
+                    android:src="@drawable/logo_brand_white"
+                    android:contentDescription="Duh Mendes" />
+
                 <!-- The header texts use gravity left, not start: the launcher lays out left to right
                      (no supportsRtl), and with start a right-to-left script such as Arabic would move to the
                      right edge of these full-width lines instead of staying under the clock. -->
@@ -374,4 +384,25 @@
         android:layout_height="10dp"
         android:alpha="0"
         android:importantForAccessibility="no" />
+
+    <!-- Cinematic Splash Overlay on cold boot / startup -->
+    <FrameLayout
+        android:id="@+id/splashOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#FF000000"
+        android:clickable="true"
+        android:focusable="false"
+        android:elevation="50dp"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/splashLogo"
+            android:layout_width="380dp"
+            android:layout_height="160dp"
+            android:layout_gravity="center"
+            android:scaleType="fitCenter"
+            android:src="@drawable/logo_brand_white"
+            android:contentDescription="Duh Mendes" />
+    </FrameLayout>
 </FrameLayout>

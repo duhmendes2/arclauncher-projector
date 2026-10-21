@@ -64,15 +64,20 @@ jobs:
         uses: softprops/action-gh-release@v2
         if: github.ref == 'refs/heads/main'
         with:
-          tag_name: v2.0.1-projector-native
-          name: Arc Launcher Projector Edition v2.0.1 (Local Wallpaper Picker)
+          tag_name: v2.1.0-projector-native
+          name: Arc Launcher Projector Edition v2.1.0 (Pro Features & Calibration)
           body: |
-            ## 🚀 Arc Launcher Projector Edition v2.0.1
+            ## 🚀 Arc Launcher Projector Edition v2.1.0 (Pro Features & Calibration)
             
-            ### 🆕 Novidades desta versão:
-            - 📂 **Seletor de Papel de Parede Local / Pendrive:** Adicionado suporte nativo para selecionar e aplicar qualquer imagem armazenada na memória interna do projetor (`Pictures`, `Download`, `DCIM`, `Projetor`) ou em Pendrives USB, além de suporte para abrir o Gerenciador de Arquivos do sistema.
-            - 🎬 **Catálogo TMDB 1080p Integrado:** 22 backdrops cinematográficos disponíveis para download imediato ou rotação automática.
-            - ⚡ **Desempenho Extremo:** APK de apenas ~430 KB com consumo de ~20 MB de RAM.
+            ### 🆕 Principais Recursos Implementados:
+            - 🎯 **Grade de Calibração de Foco & Keystone:** Tela cheia com padrão milimétrico 16:9, alinhadores de cantos em L, escala de cinza de 10 passos e miradas de teste de foco no centro e nos 4 cantos para ajuste perfeito da lente e do trapézio óptico.
+            - ⏱️ **Temporizador de Desligamento (Sleep Timer):** Opções rápidas de 15, 30, 45, 60, 90 e 120 minutos com monitoramento em tempo real e suspensão programada.
+            - 📻 **Modo Apenas Áudio / Apagar Projeção:** Apaga totalmente a lâmpada/projeção mantendo Spotify, Bluetooth e músicas de fundo ativas; qualquer toque no controle religa a tela instantaneamente.
+            - 🌙 **Descanso de Tela Integrado (Cinema Screensaver):** Relógio minimalista flutuante anti-burnin e slideshow suave de wallpapers de cinema ativável por tempo de inatividade ou manualmente.
+            - 🕶️ **Dimmer de Cinema (Filtro Escurecedor):** Camada de escurecimento ajustável (Desativado, 20%, 40%, 60%) para conforto visual absoluto em salas escuras.
+            - 🚫 **Gerenciador de Aplicativos (Ocultar Bloatware):** Interface simples para marcar e ocultar aplicativos indesejados de fábrica sem precisar desinstalá-los.
+            - 📂 **Seletor de Imagens Locais e Pendrive:** Acesso direto a mídias locais ou catálogo de 22 wallpapers de cinema TMDB em 1080p.
+            - ⚡ **Ultra Leve:** Mantém o tamanho mínimo de ~440 KB e consumo ultra baixo de memória RAM (~20 MB).
           files: |
             apks/ArcLauncher_Projector_Native_v2.0.apk
             apks/ArcLauncher_Projector_Edition.apk

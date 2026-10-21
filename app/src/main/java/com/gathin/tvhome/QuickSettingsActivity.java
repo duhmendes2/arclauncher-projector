@@ -26,17 +26,37 @@ public final class QuickSettingsActivity extends Activity {
         findViewById(R.id.scrim).setOnClickListener(v -> finish());
         LinearLayout rows = findViewById(R.id.rows);
 
-        addRow(rows, R.drawable.ic_settings, R.string.tv_settings, 0, new Intent(Settings.ACTION_SETTINGS));
-        addRowAction(rows, R.drawable.ic_picture, "Ajustes do Projetor (Foco & Keystone)", 0, () -> ProjectorActions.openProjectorSettings(this));
+        // Projector dedicated features
+        addRowAction(rows, R.drawable.ic_picture, "🎯 Calibrar Foco & Keystone (Padrão)", 0, () -> {
+            startActivity(new Intent(this, CalibrationActivity.class));
+        });
+
+        String sleepStatus = SleepTimer.getStatusText(this);
+        addRowAction(rows, R.drawable.ic_home_settings, "⏱️ Sleep Timer: " + sleepStatus, 0, () -> {
+            SleepTimer.showDialog(this, () -> finish());
+        });
+
+        addRowAction(rows, R.drawable.ic_home_settings, "📻 Apagar Tela (Apenas Áudio)", 0, () -> {
+            startActivity(new Intent(this, ScreenOffActivity.class));
+        });
+
+        addRowAction(rows, R.drawable.ic_picture, "🌙 Descanso de Tela (Cinema Screensaver)", 0, () -> {
+            startActivity(new Intent(this, ScreensaverActivity.class));
+        });
+
+        addRowAction(rows, R.drawable.ic_picture, "📽️ Ajustes do Projetor (Foco & Keystone)", 0, () -> ProjectorActions.openProjectorSettings(this));
         addRowAction(rows, R.drawable.ic_input, "Entradas de Vídeo (HDMI)", 0, () -> ProjectorActions.openTvInputs(this));
         addRowAction(rows, R.drawable.ic_settings, "Bluetooth", 0, () -> ProjectorActions.openBluetoothSettings(this));
         addRow(rows, R.drawable.ic_wifi, R.string.quick_network, 0, new Intent(Settings.ACTION_WIFI_SETTINGS));
         addRow(rows, R.drawable.ic_apps, R.string.quick_apps, R.string.quick_apps_hint,
                 new Intent(Settings.ACTION_MANAGE_APPLICATIONS_SETTINGS));
         addRowAction(rows, R.drawable.ic_picture, "🎬 Papéis de Parede TMDB", 0, () -> CinemaWallpapers.showCinemaPicker(this, null));
+        
         // Through Home, so it rebuilds with the new choices when Launcher settings closes.
         addRow(rows, R.drawable.ic_home_settings, R.string.launcher_settings, 0,
                 new Intent(this, MainActivity.class).setAction(MainActivity.ACTION_LAUNCHER_SETTINGS));
+
+        addRow(rows, R.drawable.ic_settings, R.string.tv_settings, 0, new Intent(Settings.ACTION_SETTINGS));
 
         rows.getChildAt(0).requestFocus();
     }

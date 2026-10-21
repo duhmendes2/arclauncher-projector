@@ -22,6 +22,7 @@
             android:textColor="#FFFFFFFF"
             android:textSize="26sp" />
 
+        <!-- Colunas -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -42,6 +43,7 @@
             <TextView android:id="@+id/columns7" style="@style/SettingsColumnChoice" android:text="7" />
         </LinearLayout>
 
+        <!-- Linhas abaixo do Dock -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -62,15 +64,72 @@
             <TextView android:id="@+id/rows3" style="@style/SettingsColumnChoice" android:text="3" />
         </LinearLayout>
 
+        <!-- Seção Recursos de Projetor & Cinema -->
         <TextView
-            android:id="@+id/wallpaperChoice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="📽️ Recursos de Projetor &amp; Cinema"
+            android:textColor="#FFFFD600"
+            android:textSize="18sp"
+            android:fontFamily="@font/outfit_medium" />
+
+        <TextView
+            android:id="@+id/calibrationChoice"
             style="@style/SettingsRow"
-            android:layout_marginTop="28dp" />
+            android:layout_marginTop="12dp"
+            android:text="🎯 Calibrar Foco &amp; Keystone (Padrão de Imagem)" />
+
+        <TextView
+            android:id="@+id/sleepTimerChoice"
+            style="@style/SettingsRow"
+            android:layout_marginTop="10dp"
+            android:text="⏱️ Temporizador de Desligamento (Sleep Timer)" />
+
+        <TextView
+            android:id="@+id/screenOffChoice"
+            style="@style/SettingsRow"
+            android:layout_marginTop="10dp"
+            android:text="📻 Apagar Tela (Modo Apenas Áudio)" />
+
+        <TextView
+            android:id="@+id/screensaverChoice"
+            style="@style/SettingsRow"
+            android:layout_marginTop="10dp"
+            android:text="🌙 Protetor de Tela Inativo" />
+
+        <TextView
+            android:id="@+id/nightDimmerChoice"
+            style="@style/SettingsRow"
+            android:layout_marginTop="10dp"
+            android:text="🕶️ Dimmer de Cinema (Filtro Escurecedor)" />
+
+        <TextView
+            android:id="@+id/appHideChoice"
+            style="@style/SettingsRow"
+            android:layout_marginTop="10dp"
+            android:text="🚫 Gerenciar Aplicativos (Ocultar Bloatware)" />
+
+        <TextView
+            android:id="@+id/projectorSettingsChoice"
+            style="@style/SettingsRow"
+            android:layout_marginTop="10dp"
+            android:text="⚙️ Ajustes Nativos do Projetor (Keystone do Sistema)" />
+
+        <!-- Papéis de Parede -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="🎨 Papel de Parede"
+            android:textColor="#FFFFD600"
+            android:textSize="18sp"
+            android:fontFamily="@font/outfit_medium" />
 
         <TextView
             android:id="@+id/pickLocalWallpaperChoice"
             style="@style/SettingsRow"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="12dp"
             android:text="📂 Escolher da Memória Interna / Pendrive" />
 
         <TextView
@@ -80,15 +139,24 @@
             android:text="🎬 Catálogo de Cinema TMDB (1080p)" />
 
         <TextView
-            android:id="@+id/projectorSettingsChoice"
+            android:id="@+id/wallpaperChoice"
             style="@style/SettingsRow"
-            android:layout_marginTop="10dp"
-            android:text="📽️ Ajustes do Projetor (Foco &amp; Keystone)" />
+            android:layout_marginTop="10dp" />
+
+        <!-- Animações -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="✨ Desempenho &amp; Efeitos"
+            android:textColor="#FFFFD600"
+            android:textSize="18sp"
+            android:fontFamily="@font/outfit_medium" />
 
         <TextView
             android:id="@+id/animationsChoice"
             style="@style/SettingsRow"
-            android:layout_marginTop="28dp" />
+            android:layout_marginTop="12dp" />
 
         <TextView
             android:id="@+id/advancedChoice"
@@ -117,6 +185,7 @@
             android:textColor="#FFACB8C1"
             android:textSize="14sp" />
 
+        <!-- Sistema -->
         <TextView
             android:id="@+id/defaultHomeChoice"
             style="@style/SettingsRow"

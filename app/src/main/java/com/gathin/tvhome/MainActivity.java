@@ -4592,19 +4592,17 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
 
         PopupWindow popup = glassPopup(panel, (int) (200 * density));
 
-        addSettingsMenuRow(rows, popup, R.string.launcher_settings, () -> startActivityForResult(
-
-                new Intent(this, LauncherSettingsActivity.class), LAUNCHER_SETTINGS_REQUEST));
-
-        addSettingsMenuRowText(rows, popup, "📽️ Ajustes do Projetor", () -> ProjectorActions.openProjectorSettings(this));
-
+        addSettingsMenuRowText(rows, popup, "📐 Ajuste de Tela (Keystone)", () -> ProjectorActions.openKeystoneControl(this));
+        addSettingsMenuRowText(rows, popup, "🔍 Foco da Imagem", () -> ProjectorActions.openFocusControl(this));
+        addSettingsMenuRowText(rows, popup, "🌐 Wi-Fi e Internet", () -> open(systemIntent(Settings.ACTION_WIFI_SETTINGS)));
+        addSettingsMenuRowText(rows, popup, "🔊 Som e Bluetooth", () -> ProjectorActions.openBluetoothSpeakerMode(this));
+        addSettingsMenuRowText(rows, popup, "⏱️ Timer de Desligar (Sleep)", () -> SleepTimer.showDialog(this, this::updateSleepButton));
+        addSettingsMenuRowText(rows, popup, "📱 Todos os Aplicativos", this::onLibraryRequested);
         addSettingsMenuRowText(rows, popup, "🎬 Papéis de Parede TMDB", () -> CinemaWallpapers.showCinemaPicker(this, null));
-
-        if (moduleCards) addSettingsMenuRow(rows, popup, R.string.module_cards, this::showModuleCards);
-
-        if (dockRow) addSettingsMenuRow(rows, popup, R.string.dock_edit, this::startDockEdit);
-
-        addSettingsMenuRow(rows, popup, R.string.reorder, this::toggleReorder);
+        if (dockRow) addSettingsMenuRowText(rows, popup, "📌 Organizar Barra de Apps", this::startDockEdit);
+        addSettingsMenuRowText(rows, popup, "⚙️ Configurações do Android", () -> open(systemIntent(Settings.ACTION_SETTINGS)));
+        addSettingsMenuRowText(rows, popup, "🛠️ Configurações do Launcher", () -> startActivityForResult(
+                new Intent(this, LauncherSettingsActivity.class), LAUNCHER_SETTINGS_REQUEST));
 
         panel.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
 

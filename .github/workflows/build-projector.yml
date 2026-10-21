@@ -64,10 +64,10 @@ jobs:
         uses: softprops/action-gh-release@v2
         if: github.ref == 'refs/heads/main'
         with:
-          tag_name: v2.1.7-projector-native
-          name: Arc Launcher Projector Edition v2.1.7 (Logo Contorno Splash & Horizontal Borda Top)
+          tag_name: v2.1.8-projector-native
+          name: Arc Launcher Projector Edition v2.1.8 (Logo Contorno Splash & Horizontal Borda Top)
           body: |
-            ## 🚀 Arc Launcher Projector Edition v2.1.7 (Logo Contorno Splash & Horizontal Borda Top)
+            ## 🚀 Arc Launcher Projector Edition v2.1.8 (Logo Contorno Splash & Horizontal Borda Top)
             
             ### 🆕 Novidades desta versão:
             - 🌟 **Logo no Topo Oficial:** Aplicado `horizontal_original_borda.png` com escala automática e altura de 34dp no canto superior esquerdo do launcher.

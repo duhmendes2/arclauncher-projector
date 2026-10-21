@@ -71,6 +71,8 @@ public class HomeKeyService extends AccessibilityService {
 
     @Override
     protected boolean onKeyEvent(KeyEvent event) {
+        android.util.Log.i("ArcRemote", "KeyEvent: keyCode=" + event.getKeyCode() + " scanCode=" + event.getScanCode() + " action=" + event.getAction());
+
         if (isSettingsKey(event)) {
             if (event.getAction() == KeyEvent.ACTION_UP && !event.isCanceled()) {
                 Intent open = settingsPanel ? new Intent(this, QuickSettingsActivity.class)
@@ -84,6 +86,22 @@ public class HomeKeyService extends AccessibilityService {
             if (event.getAction() == KeyEvent.ACTION_UP && !event.isCanceled()) RemoteKeys.launch(this, app);
             return true;
         }
+
+        // Direct mapping for dedicated remote buttons
+        int kc = event.getKeyCode();
+        if (kc == 822 || kc == 191 || kc == 183) { // Netflix -> YouCine TV
+            if (event.getAction() == KeyEvent.ACTION_UP && !event.isCanceled()) RemoteKeys.launch(this, "com.world.youcinetv");
+            return true;
+        }
+        if (kc == 830 || kc == 195 || kc == 186) { // Prime Video -> Stremio
+            if (event.getAction() == KeyEvent.ACTION_UP && !event.isCanceled()) RemoteKeys.launch(this, "com.stremio.one");
+            return true;
+        }
+        if (kc == 823 || kc == 190 || kc == 184 || kc == 835 || kc == 836 || kc == 185) { // Disney+ / YouTube -> YouTube
+            if (event.getAction() == KeyEvent.ACTION_UP && !event.isCanceled()) RemoteKeys.launch(this, "com.WhaleTV.whaleos.youtube.tv");
+            return true;
+        }
+
         if (event.getKeyCode() != KeyEvent.KEYCODE_ALL_APPS) return false;
         if (event.getAction() == KeyEvent.ACTION_UP && !event.isCanceled()) {
             Intent home = new Intent(Intent.ACTION_MAIN)

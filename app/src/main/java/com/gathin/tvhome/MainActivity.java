@@ -1007,7 +1007,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
 
         });
 
-        btnSettings.setOnClickListener(v -> open(systemIntent(Settings.ACTION_SETTINGS)));
+        btnSettings.setOnClickListener(v -> showSettingsMenu());
 
         btnReorder = findViewById(R.id.btnReorder);
 

@@ -5033,5 +5033,24 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
 
     }
 
-}
 
+    private void applyNightDimmer() {
+        int dim = getSharedPreferences(Config.SETTINGS_NAME, MODE_PRIVATE)
+                .getInt(LauncherSettingsActivity.KEY_NIGHT_DIMMER, 0);
+        if (dim > 0) {
+            if (nightDimmerView == null) {
+                nightDimmerView = new View(this);
+                nightDimmerView.setFocusable(false);
+                nightDimmerView.setClickable(false);
+                root.addView(nightDimmerView, new FrameLayout.LayoutParams(
+                        FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
+            }
+            int alpha = (int) (255 * (dim / 100.0f));
+            nightDimmerView.setBackgroundColor(Color.argb(alpha, 0, 0, 0));
+            nightDimmerView.setVisibility(View.VISIBLE);
+            nightDimmerView.bringToFront();
+        } else if (nightDimmerView != null) {
+            nightDimmerView.setVisibility(View.GONE);
+        }
+    }
+}

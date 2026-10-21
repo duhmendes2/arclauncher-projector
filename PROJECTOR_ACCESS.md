@@ -39,6 +39,19 @@ Documento de consulta rápida para manutenção, compilação e deploy do launch
 * **Pasta de Saída dos APKs Locais:** `D:\IA\MCP\arclauncher\release_apks\`
 * **APK Atual de Alta Performance:** `ArcLauncher_Projector_Native_v2.1.0.apk` (~441 KB)
 
+### ⚡ Controle Remoto de Energia (Ligar & Desligar via Rede)
+Como configuramos a política `wifi_sleep_policy=2` e `stay_on_while_plugged_in=3`, a placa de rede do Bettdow AC1066 permanece ouvindo comandos mesmo com a lâmpada/projeção desligada.
+* **Comando para Desligar (Sleep):**
+  ```powershell
+  adb -s 192.168.101.187:5555 shell "input keyevent 223"
+  ```
+  *(Ou execute: `D:\IA\MCP\arclauncher\scripts\turn_off.ps1`)*
+* **Comando para Ligar (Wakeup):**
+  ```powershell
+  adb -s 192.168.101.187:5555 shell "input keyevent 224"
+  ```
+  *(Ou execute: `D:\IA\MCP\arclauncher\scripts\turn_on.ps1`)*
+
 ---
 
 ### 🛠️ Recursos de Hardware do Projetor Integrados no Código

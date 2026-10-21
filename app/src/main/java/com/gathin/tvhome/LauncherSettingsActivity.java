@@ -95,6 +95,9 @@ public final class LauncherSettingsActivity extends Activity {
         findViewById(R.id.screenOffChoice).setOnClickListener(v ->
                 startActivity(new Intent(this, ScreenOffActivity.class)));
 
+        findViewById(R.id.whaleUnlockerChoice).setOnClickListener(v ->
+                startActivity(new Intent(this, WhaleUnlockerActivity.class)));
+
         screensaverChoice = findViewById(R.id.screensaverChoice);
         screensaverChoice.setOnClickListener(v -> showScreensaverTimeoutDialog());
 

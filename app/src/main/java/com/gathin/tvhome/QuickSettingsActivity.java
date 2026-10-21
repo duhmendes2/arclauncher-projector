@@ -31,6 +31,10 @@ public final class QuickSettingsActivity extends Activity {
             startActivity(new Intent(this, CalibrationActivity.class));
         });
 
+        addRowAction(rows, R.drawable.ic_settings, "🔓 Destravador do Sistema (Whale OS)", 0, () -> {
+            startActivity(new Intent(this, WhaleUnlockerActivity.class));
+        });
+
         String sleepStatus = SleepTimer.getStatusText(this);
         addRowAction(rows, R.drawable.ic_home_settings, "⏱️ Sleep Timer: " + sleepStatus, 0, () -> {
             SleepTimer.showDialog(this, () -> finish());

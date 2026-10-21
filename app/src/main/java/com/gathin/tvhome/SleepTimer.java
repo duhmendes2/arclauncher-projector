@@ -53,6 +53,12 @@ public final class SleepTimer {
             Toast.makeText(context, "⏱️ Temporizador cancelado", Toast.LENGTH_SHORT).show();
             return;
         }
+
+        // Check if admin is active; if not, suggest activating it for real hardware shutdown
+        if (!TvAdminReceiver.isAdminActive(context) && !HomeKeyService.isServiceRunning()) {
+            Toast.makeText(context, "💡 Dica: Ative o 'Administrador de Dispositivo' no Destravador para desligamento 100% de hardware.", Toast.LENGTH_LONG).show();
+        }
+
         long target = System.currentTimeMillis() + (minutes * 60L * 1000L);
         prefs(context).edit().putLong(KEY_TARGET_MILLIS, target).apply();
         scheduleCheck(context.getApplicationContext());
@@ -88,8 +94,7 @@ public final class SleepTimer {
                 }
             }
         };
-        // Check either in 30 seconds or when due
-        long delay = Math.min(diff, 30_000L);
+        long delay = Math.min(diff, 15_000L);
         handler.postDelayed(pendingCheck, Math.max(1000L, delay));
     }
 
@@ -105,7 +110,6 @@ public final class SleepTimer {
             "⏱️ 120 Minutos (2 Horas)"
         };
 
-        int currentSelection = 0;
         int remaining = getRemainingMinutes(activity);
         if (remaining > 0) {
             labels[0] = "🚫 Desativar (restam " + remaining + " min)";
@@ -122,12 +126,23 @@ public final class SleepTimer {
                 .show();
     }
 
-    private static void executeSleep(Context context) {
+    public static void executeSleep(Context context) {
         cancelTimer(context);
+
+        // 1. Hardware Force-Lock via Device Administrator (Kernel level screen off and sleep)
+        if (TvAdminReceiver.lockNow(context)) {
+            return;
+        }
+
+        // 2. Hardware Force-Lock via Accessibility Service (Global Action Lock Screen)
+        if (HomeKeyService.lockHardwareScreen()) {
+            return;
+        }
+
+        // 3. Fallback: PowerManager goToSleep
         try {
             PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
             if (pm != null) {
-                // If system app or has permission
                 try {
                     pm.getClass().getMethod("goToSleep", long.class).invoke(pm, SystemClock.uptimeMillis());
                     return;
@@ -135,7 +150,7 @@ public final class SleepTimer {
             }
         } catch (Exception ignored) {}
 
-        // Fallback: request shutdown intent
+        // 4. Fallback: Request Shutdown Intent
         try {
             Intent shutdown = new Intent("com.android.internal.intent.action.REQUEST_SHUTDOWN");
             shutdown.putExtra("android.intent.extra.KEY_CONFIRM", false);
@@ -144,16 +159,9 @@ public final class SleepTimer {
             return;
         } catch (Exception ignored) {}
 
-        try {
-            Intent shutdown = new Intent(Intent.ACTION_SHUTDOWN);
-            shutdown.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            context.sendBroadcast(shutdown);
-        } catch (Exception ignored) {}
-
-        // Final graceful fallback: open ScreenOffActivity with screen brightness 0
+        // 5. Final Graceful Fallback: Deep Screen Off
         try {
             Intent screenOff = new Intent(context, ScreenOffActivity.class);
-            screenOff.putExtra("auto_dim_deep", true);
             screenOff.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(screenOff);
         } catch (Exception ignored) {}

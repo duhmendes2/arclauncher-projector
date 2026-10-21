@@ -93,6 +93,12 @@
             android:text="📻 Apagar Tela (Modo Apenas Áudio)" />
 
         <TextView
+            android:id="@+id/whaleUnlockerChoice"
+            style="@style/SettingsRow"
+            android:layout_marginTop="10dp"
+            android:text="🔓 Destravador do Sistema (Whale OS / Bettdow)" />
+
+        <TextView
             android:id="@+id/screensaverChoice"
             style="@style/SettingsRow"
             android:layout_marginTop="10dp"

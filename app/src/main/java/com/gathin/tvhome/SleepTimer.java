@@ -2,6 +2,7 @@ package com.gathin.tvhome;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -9,6 +10,11 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.PowerManager;
 import android.os.SystemClock;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.Window;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public final class SleepTimer {
@@ -41,10 +47,10 @@ public final class SleepTimer {
 
     public static String getStatusText(Context context) {
         if (!isRunning(context)) {
-            return "Desativado";
+            return "Sleep";
         }
         int min = getRemainingMinutes(context);
-        return min + " min restantes";
+        return min + "m";
     }
 
     public static void setTimer(Context context, int minutes) {
@@ -52,11 +58,6 @@ public final class SleepTimer {
             cancelTimer(context);
             Toast.makeText(context, "⏱️ Temporizador cancelado", Toast.LENGTH_SHORT).show();
             return;
-        }
-
-        // Check if admin is active; if not, suggest activating it for real hardware shutdown
-        if (!TvAdminReceiver.isAdminActive(context) && !HomeKeyService.isServiceRunning()) {
-            Toast.makeText(context, "💡 Dica: Ative o 'Administrador de Dispositivo' no Destravador para desligamento 100% de hardware.", Toast.LENGTH_LONG).show();
         }
 
         long target = System.currentTimeMillis() + (minutes * 60L * 1000L);
@@ -94,20 +95,23 @@ public final class SleepTimer {
                 }
             }
         };
-        long delay = Math.min(diff, 15_000L);
+        long delay = Math.min(diff, 10_000L);
         handler.postDelayed(pendingCheck, Math.max(1000L, delay));
     }
 
     public static void showDialog(Activity activity, Runnable onUpdated) {
-        final int[] minutesOptions = {0, 15, 30, 45, 60, 90, 120};
+        final int[] minutesOptions = {0, 5, 10, 15, 30, 45, 60, 120, 180, -1};
         String[] labels = {
             "🚫 Desativar Temporizador",
+            "⏱️ 5 Minutos",
+            "⏱️ 10 Minutos",
             "⏱️ 15 Minutos",
             "⏱️ 30 Minutos",
             "⏱️ 45 Minutos",
-            "⏱️ 60 Minutos (1 Hora)",
-            "⏱️ 90 Minutos (1h30)",
-            "⏱️ 120 Minutos (2 Horas)"
+            "⏱️ 1 Hora (60 min)",
+            "⏱️ 2 Horas (120 min)",
+            "⏱️ 3 Horas (180 min)",
+            "✍️ Personalizado (Ajustar com as setas)..."
         };
 
         int remaining = getRemainingMinutes(activity);
@@ -119,11 +123,80 @@ public final class SleepTimer {
                 .setTitle("⏱️ Temporizador de Desligamento (Sleep)")
                 .setItems(labels, (dialog, which) -> {
                     dialog.dismiss();
-                    setTimer(activity, minutesOptions[which]);
-                    if (onUpdated != null) onUpdated.run();
+                    if (minutesOptions[which] == -1) {
+                        showCustomMinutesDialog(activity, onUpdated);
+                    } else {
+                        setTimer(activity, minutesOptions[which]);
+                        if (onUpdated != null) onUpdated.run();
+                    }
                 })
                 .setNegativeButton(android.R.string.cancel, null)
                 .show();
+    }
+
+    public static void showCustomMinutesDialog(Activity activity, Runnable onUpdated) {
+        final int[] currentVal = {30};
+        int remaining = getRemainingMinutes(activity);
+        if (remaining > 0) currentVal[0] = remaining;
+
+        Dialog dialog = new Dialog(activity);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        View view = LayoutInflater.from(activity).inflate(R.layout.dialog_custom_sleep, null);
+        dialog.setContentView(view);
+
+        TextView display = view.findViewById(R.id.txt_minutes_display);
+        TextView btnMinus5 = view.findViewById(R.id.btn_minus_5);
+        TextView btnPlus5 = view.findViewById(R.id.btn_plus_5);
+        TextView btnMinus1 = view.findViewById(R.id.btn_minus_1);
+        TextView btnPlus1 = view.findViewById(R.id.btn_plus_1);
+        TextView btnConfirm = view.findViewById(R.id.btn_confirm);
+        TextView btnCancel = view.findViewById(R.id.btn_cancel);
+
+        Runnable updateDisplay = () -> display.setText(currentVal[0] + " min");
+        updateDisplay.run();
+
+        btnMinus5.setOnClickListener(v -> {
+            currentVal[0] = Math.max(1, currentVal[0] - 5);
+            updateDisplay.run();
+        });
+        btnPlus5.setOnClickListener(v -> {
+            currentVal[0] = Math.min(360, currentVal[0] + 5);
+            updateDisplay.run();
+        });
+        btnMinus1.setOnClickListener(v -> {
+            currentVal[0] = Math.max(1, currentVal[0] - 1);
+            updateDisplay.run();
+        });
+        btnPlus1.setOnClickListener(v -> {
+            currentVal[0] = Math.min(360, currentVal[0] + 1);
+            updateDisplay.run();
+        });
+
+        btnConfirm.setOnClickListener(v -> {
+            dialog.dismiss();
+            setTimer(activity, currentVal[0]);
+            if (onUpdated != null) onUpdated.run();
+        });
+
+        btnCancel.setOnClickListener(v -> dialog.dismiss());
+
+        dialog.setOnKeyListener((d, keyCode, event) -> {
+            if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
+                    currentVal[0] = Math.max(1, currentVal[0] - 5);
+                    updateDisplay.run();
+                    return true;
+                } else if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
+                    currentVal[0] = Math.min(360, currentVal[0] + 5);
+                    updateDisplay.run();
+                    return true;
+                }
+            }
+            return false;
+        });
+
+        dialog.show();
+        btnConfirm.requestFocus();
     }
 
     public static void executeSleep(Context context) {

@@ -331,6 +331,13 @@
                     android:nextFocusDown="@+id/grid" />
 
                 <TextView
+                    android:id="@+id/btnSleep"
+                    style="@style/TopButton"
+                    android:text="Sleep"
+                    android:drawableStart="@drawable/ic_home_settings"
+                    android:nextFocusDown="@+id/grid" />
+
+                <TextView
                     android:id="@+id/btnSettings"
                     style="@style/TopButton"
                     android:text="@string/settings"

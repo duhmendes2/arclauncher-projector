@@ -263,6 +263,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     private View btnInputs;
 
     private TextView btnWifi;
+    private TextView btnSleep;
 
     private TextView shamsiDate;
 
@@ -541,6 +542,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             updateRace();
 
             updateWifiLabel();
+        updateSleepButton();
 
             sky.update();
 
@@ -651,6 +653,10 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         greetingColor = greeting.getCurrentTextColor();
 
         btnWifi = findViewById(R.id.btnWifi);
+        btnSleep = findViewById(R.id.btnSleep);
+        if (btnSleep != null) {
+            btnSleep.setOnClickListener(v -> SleepTimer.showDialog(this, this::updateSleepButton));
+        }
 
         shamsiDate = findViewById(R.id.shamsiDate);
 
@@ -5053,4 +5059,17 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             nightDimmerView.setVisibility(View.GONE);
         }
     }
+
+    private void updateSleepButton() {
+        if (btnSleep != null) {
+            if (SleepTimer.isRunning(this)) {
+                btnSleep.setText("⏱️ " + SleepTimer.getStatusText(this));
+                btnSleep.setTextColor(0xFFFFD600);
+            } else {
+                btnSleep.setText("⏱️ Sleep");
+                btnSleep.setTextColor(0xFFFFFFFF);
+            }
+        }
+    }
+
 }

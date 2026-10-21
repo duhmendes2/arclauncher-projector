@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="480dp"
+    android:layout_height="wrap_content"
+    android:background="#FF141920"
+    android:orientation="vertical"
+    android:padding="28dp"
+    android:gravity="center_horizontal">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="⏱️ Temporizador Personalizado"
+        android:textColor="#FFFFFFFF"
+        android:textSize="20sp"
+        android:fontFamily="@font/outfit_medium" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:text="Use as setas ◀ ▶ do controle para ajustar os minutos"
+        android:textColor="#FF88929B"
+        android:textSize="13sp" />
+
+    <!-- Visor Central de Minutos -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/btn_minus_5"
+            style="@style/SettingsColumnChoice"
+            android:layout_width="56dp"
+            android:layout_height="44dp"
+            android:text="- 5m" />
+
+        <TextView
+            android:id="@+id/txt_minutes_display"
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="#FFFFD600"
+            android:textSize="36sp"
+            android:fontFamily="@font/outfit_light"
+            android:text="30 min" />
+
+        <TextView
+            android:id="@+id/btn_plus_5"
+            style="@style/SettingsColumnChoice"
+            android:layout_width="56dp"
+            android:layout_height="44dp"
+            android:text="+ 5m" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/btn_minus_1"
+            style="@style/SettingsColumnChoice"
+            android:layout_width="56dp"
+            android:layout_height="36dp"
+            android:text="- 1m"
+            android:textSize="12sp" />
+
+        <View
+            android:layout_width="160dp"
+            android:layout_height="1dp" />
+
+        <TextView
+            android:id="@+id/btn_plus_1"
+            style="@style/SettingsColumnChoice"
+            android:layout_width="56dp"
+            android:layout_height="36dp"
+            android:text="+ 1m"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <!-- Botões de Ação -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/btn_cancel"
+            style="@style/SettingsRow"
+            android:layout_width="130dp"
+            android:gravity="center"
+            android:text="Cancelar"
+            android:layout_marginEnd="16dp" />
+
+        <TextView
+            android:id="@+id/btn_confirm"
+            style="@style/SettingsRow"
+            android:layout_width="150dp"
+            android:gravity="center"
+            android:background="#FF2B5CFF"
+            android:textColor="#FFFFFFFF"
+            android:text="✅ Iniciar Timer" />
+    </LinearLayout>
+</LinearLayout>

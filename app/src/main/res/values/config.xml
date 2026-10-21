@@ -97,14 +97,14 @@
         <item>191:com.world.youcinetv</item>
         <item>183:com.world.youcinetv</item>
         <item>823:com.WhaleTV.whaleos.youtube.tv</item>
-        <item>190:com.WhaleTV.whaleos.youtube.tv</item>
+        <item>190:tv.pluto.android</item>
         <item>184:com.WhaleTV.whaleos.youtube.tv</item>
         <item>830:com.stremio.one</item>
         <item>195:com.stremio.one</item>
         <item>186:com.stremio.one</item>
-        <item>835:com.WhaleTV.whaleos.youtube.tv</item>
-        <item>836:com.WhaleTV.whaleos.youtube.tv</item>
-        <item>185:com.WhaleTV.whaleos.youtube.tv</item>
+        <item>835:tv.pluto.android</item>
+        <item>836:tv.pluto.android</item>
+        <item>185:tv.pluto.android</item>
     </string-array>
 
     <!-- Show the Solar Hijri (Shamsi) date used in Iran and Afghanistan, e.g. "27 Mehr 1405", above the

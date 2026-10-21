@@ -97,7 +97,11 @@ public class HomeKeyService extends AccessibilityService {
             if (event.getAction() == KeyEvent.ACTION_UP && !event.isCanceled()) RemoteKeys.launch(this, "com.stremio.one");
             return true;
         }
-        if (kc == 823 || kc == 190 || kc == 184 || kc == 835 || kc == 836 || kc == 185) { // Disney+ / YouTube -> YouTube
+        if (kc == 835 || kc == 836 || kc == 185 || kc == 190) { // Disney+ button variants -> Pluto TV
+            if (event.getAction() == KeyEvent.ACTION_UP && !event.isCanceled()) RemoteKeys.launch(this, "tv.pluto.android");
+            return true;
+        }
+        if (kc == 823 || kc == 184) { // Dedicated YouTube button -> YouTube
             if (event.getAction() == KeyEvent.ACTION_UP && !event.isCanceled()) RemoteKeys.launch(this, "com.WhaleTV.whaleos.youtube.tv");
             return true;
         }

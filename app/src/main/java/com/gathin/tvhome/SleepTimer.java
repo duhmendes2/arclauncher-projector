@@ -56,17 +56,21 @@ public final class SleepTimer {
     public static void setTimer(Context context, int minutes) {
         if (minutes <= 0) {
             cancelTimer(context);
-            Toast.makeText(context, "⏱️ Temporizador cancelado", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Temporizador cancelado", Toast.LENGTH_SHORT).show();
             return;
         }
+
+        // Bridge to native hardware WhaleService timer in Amlogic
+        WhaleHardwareHelper.setHardwareSleepTimer(context, minutes);
 
         long target = System.currentTimeMillis() + (minutes * 60L * 1000L);
         prefs(context).edit().putLong(KEY_TARGET_MILLIS, target).apply();
         scheduleCheck(context.getApplicationContext());
-        Toast.makeText(context, "⏱️ Desligamento programado para " + minutes + " min", Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, "Desligamento em " + minutes + " min", Toast.LENGTH_SHORT).show();
     }
 
     public static void cancelTimer(Context context) {
+        WhaleHardwareHelper.cancelHardwareSleepTimer(context);
         prefs(context).edit().remove(KEY_TARGET_MILLIS).apply();
         if (pendingCheck != null) {
             handler.removeCallbacks(pendingCheck);
@@ -102,16 +106,16 @@ public final class SleepTimer {
     public static void showDialog(Activity activity, Runnable onUpdated) {
         final int[] minutesOptions = {0, 5, 10, 15, 30, 45, 60, 120, 180, -1};
         String[] labels = {
-            "🚫 Desativar Temporizador",
-            "⏱️ 5 Minutos",
-            "⏱️ 10 Minutos",
-            "⏱️ 15 Minutos",
-            "⏱️ 30 Minutos",
-            "⏱️ 45 Minutos",
-            "⏱️ 1 Hora (60 min)",
-            "⏱️ 2 Horas (120 min)",
-            "⏱️ 3 Horas (180 min)",
-            "✍️ Personalizado (Ajustar com as setas)..."
+            "Desativar Temporizador",
+            "5 Minutos",
+            "10 Minutos",
+            "15 Minutos",
+            "30 Minutos",
+            "45 Minutos",
+            "1 Hora (60 min)",
+            "2 Horas (120 min)",
+            "3 Horas (180 min)",
+            "Personalizado (Ajustar com as setas)..."
         };
 
         int remaining = getRemainingMinutes(activity);
@@ -202,41 +206,23 @@ public final class SleepTimer {
     public static void executeSleep(Context context) {
         cancelTimer(context);
 
-        // 1. Hardware Force-Lock via Device Administrator (Kernel level screen off and sleep)
-        if (TvAdminReceiver.lockNow(context)) {
-            return;
-        }
+        // 1. Direct hardware suspend via vendor WhaleService
+        WhaleHardwareHelper.setHardwareSleepTimer(context, 1);
 
-        // 2. Hardware Force-Lock via Accessibility Service (Global Action Lock Screen)
-        if (HomeKeyService.lockHardwareScreen()) {
-            return;
-        }
+        // 2. Hardware Force-Lock via Accessibility Service
+        HomeKeyService.lockHardwareScreen();
 
-        // 3. Fallback: PowerManager goToSleep
+        // 3. Device Administrator screen lock
+        TvAdminReceiver.lockNow(context);
+
+        // 4. Fallback: PowerManager goToSleep
         try {
             PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
             if (pm != null) {
                 try {
                     pm.getClass().getMethod("goToSleep", long.class).invoke(pm, SystemClock.uptimeMillis());
-                    return;
                 } catch (Exception ignored) {}
             }
-        } catch (Exception ignored) {}
-
-        // 4. Fallback: Request Shutdown Intent
-        try {
-            Intent shutdown = new Intent("com.android.internal.intent.action.REQUEST_SHUTDOWN");
-            shutdown.putExtra("android.intent.extra.KEY_CONFIRM", false);
-            shutdown.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            context.startActivity(shutdown);
-            return;
-        } catch (Exception ignored) {}
-
-        // 5. Final Graceful Fallback: Deep Screen Off
-        try {
-            Intent screenOff = new Intent(context, ScreenOffActivity.class);
-            screenOff.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            context.startActivity(screenOff);
         } catch (Exception ignored) {}
     }
 }

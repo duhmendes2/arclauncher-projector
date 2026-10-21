@@ -5060,16 +5060,15 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         }
     }
 
-    private void updateSleepButton() {
+        private void updateSleepButton() {
         if (btnSleep != null) {
             if (SleepTimer.isRunning(this)) {
-                btnSleep.setText("⏱️ " + SleepTimer.getStatusText(this));
+                btnSleep.setText(SleepTimer.getStatusText(this));
                 btnSleep.setTextColor(0xFFFFD600);
             } else {
-                btnSleep.setText("⏱️ Sleep");
+                btnSleep.setText("Sleep");
                 btnSleep.setTextColor(0xFFFFFFFF);
             }
         }
     }
-
 }

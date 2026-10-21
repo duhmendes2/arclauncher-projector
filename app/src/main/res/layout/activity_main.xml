@@ -334,7 +334,7 @@
                     android:id="@+id/btnSleep"
                     style="@style/TopButton"
                     android:text="Sleep"
-                    android:drawableStart="@drawable/ic_home_settings"
+                    android:drawableStart="@drawable/ic_sleep"
                     android:nextFocusDown="@+id/grid" />
 
                 <TextView

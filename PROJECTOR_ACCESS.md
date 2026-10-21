@@ -23,6 +23,18 @@ Documento de consulta rápida para manutenção, compilação e deploy do launch
   & "C:\Users\ddudu\AppData\Local\Microsoft\WinGet\Packages\Syncthing.Syncthing_Microsoft.Winget.Source_8wekyb3d8bbwe\syncthing-windows-amd64-v2.1.5\syncthing.exe" serve --no-browser --no-upgrade
   ```
 
+### 🚀 Deploy e Instalação Direta via ADB (Sem Syncthing)
+Com o ADB ativado no Bettdow AC1066, a sincronização manual e o Syncthing tornaram-se desnecessários (economizando memória RAM no projetor):
+* **Transferir para a memória interna `/sdcard/Projetor/`:**
+  ```powershell
+  adb -s 192.168.101.187:5555 push "D:\IA\MCP\arclauncher\release_apks\ArcLauncher_Projector_Native_v2.0.apk" "/sdcard/Projetor/ArcLauncher_Projector_Native_v2.1.2.apk"
+  ```
+* **Instalação Silenciosa Direta:**
+  ```powershell
+  adb -s 192.168.101.187:5555 push "D:\IA\MCP\arclauncher\release_apks\ArcLauncher_Projector_Native_v2.0.apk" "/data/local/tmp/update.apk"
+  adb -s 192.168.101.187:5555 shell "pm install -r -d /data/local/tmp/update.apk"
+  ```
+
 ---
 
 ### 📦 Repositório & Compilação do Launcher
@@ -30,14 +42,14 @@ Documento de consulta rápida para manutenção, compilação e deploy do launch
 * **Branch Principal Atual (Nativa v2.0):** `main`
 * **Branch Legada (Flutter v1.1.5):** `flutter-legacy`
 * **Nome do Pacote / Application ID:** `com.omeda.arc`
-* **Versão Atual:** `2.1.0-projector` (VersionCode: `4202`)
+* **Versão Atual:** `2.1.2-projector` (VersionCode: `4204`)
 * **Chave Criptográfica Permanente:**
   * Caminho: `app/upload-keystore.jks`
   * Senha da Keystore: `projectorpass`
   * Alias da Chave: `upload`
   * Senha da Chave: `projectorpass`
 * **Pasta de Saída dos APKs Locais:** `D:\IA\MCP\arclauncher\release_apks\`
-* **APK Atual de Alta Performance:** `ArcLauncher_Projector_Native_v2.1.0.apk` (~441 KB)
+* **APK Atual de Alta Performance:** `ArcLauncher_Projector_Native_v2.1.2.apk` (~447 KB)
 
 ### ⚡ Controle Remoto de Energia (Ligar & Desligar via Rede)
 Como configuramos a política `wifi_sleep_policy=2` e `stay_on_while_plugged_in=3`, a placa de rede do Bettdow AC1066 permanece ouvindo comandos mesmo com a lâmpada/projeção desligada.

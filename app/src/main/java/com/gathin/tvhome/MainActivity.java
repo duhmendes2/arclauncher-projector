@@ -4606,7 +4606,6 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
                 } catch (Exception ignored) {}
             }).start();
         });
-        addSettingsMenuRowText(rows, popup, "🎬 Papéis de Parede TMDB", () -> CinemaWallpapers.showCinemaPicker(this, null));
         if (dockRow) addSettingsMenuRowText(rows, popup, "📌 Organizar Barra de Apps", this::startDockEdit);
         addSettingsMenuRowText(rows, popup, "⚙️ Configurações do Android", () -> open(systemIntent(Settings.ACTION_SETTINGS)));
         addSettingsMenuRowText(rows, popup, "🛠️ Configurações do Launcher", () -> startActivityForResult(

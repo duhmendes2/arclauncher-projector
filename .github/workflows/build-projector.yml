@@ -64,15 +64,11 @@ jobs:
         uses: softprops/action-gh-release@v2
         if: github.ref == 'refs/heads/main'
         with:
-          tag_name: v2.2.0-projector-native
-          name: Arc Launcher Projector Edition v2.2.0 (Menu Compacto & Gatilho Wallpaper)
+          tag_name: v2.2.1-projector-native
+          name: Arc Launcher Projector Edition v2.2.1
           body: |
-            ## 🚀 Arc Launcher Projector Edition v2.2.0 (Menu Compacto & Gatilho Wallpaper)
-            
-            ### 🆕 Novidades desta versão:
-            - 🎯 **Menu de Configurações Compacto & Reduzido:** Removidos itens redundantes (ajuste de tela, foco, wifi, som/bluetooth, timer e todos apps) para tamanho perfeito na projeção.
-            - 📜 **Painel com ScrollView Adaptativo:** Suporta novos itens sem estourar a altura da tela.
-            - 🎨 **Gatilho de Wallpaper do Homem-Aranha:** Adicionado botão direto "🎨 Gerar Novo Wallpaper (PC)" que dispara requisição HTTP para o daemon do PC gerar e aplicar nova arte em tempo real.
+            ## 🚀 Arc Launcher Projector Edition v2.2.1
+            - Removido item Papéis de Parede TMDB do menu de configurações.
           files: |
             apks/ArcLauncher_Projector_Native_v2.0.apk
             apks/ArcLauncher_Projector_Edition.apk

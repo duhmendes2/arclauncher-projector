@@ -122,7 +122,8 @@ public final class ScreensaverActivity extends Activity {
             }
         }
         if (!wallpaperFiles.isEmpty()) {
-            displayWallpaper(bgA, wallpaperFiles.get(0));
+            currentWallpaperIdx = random.nextInt(wallpaperFiles.size());
+            displayWallpaper(bgA, wallpaperFiles.get(currentWallpaperIdx));
         }
     }
 
@@ -137,7 +138,13 @@ public final class ScreensaverActivity extends Activity {
 
     private void rotateWallpaper() {
         if (wallpaperFiles.size() <= 1) return;
-        currentWallpaperIdx = (currentWallpaperIdx + 1) % wallpaperFiles.size();
+        int nextIdx = currentWallpaperIdx;
+        if (wallpaperFiles.size() > 1) {
+            while (nextIdx == currentWallpaperIdx) {
+                nextIdx = random.nextInt(wallpaperFiles.size());
+            }
+        }
+        currentWallpaperIdx = nextIdx;
         File nextFile = wallpaperFiles.get(currentWallpaperIdx);
 
         ImageView current = showingA ? bgA : bgB;

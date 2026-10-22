@@ -87,7 +87,7 @@
             android:screenOrientation="landscape" />
         <activity
             android:name=".ScreensaverActivity"
-            android:exported="false"
+            android:exported="true"
             android:excludeFromRecents="true"
             android:screenOrientation="landscape" />
         <activity

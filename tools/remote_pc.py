@@ -1,23 +1,54 @@
 import sys
 import subprocess
 import threading
+import urllib.request
+import json
 import tkinter as tk
 from tkinter import ttk
 
 ADB_PATH = r"C:\Users\ddudu\AppData\Local\Microsoft\WinGet\Packages\Google.PlatformTools_Microsoft.Winget.Source_8wekyb3d8bbwe\platform-tools\adb.exe"
-PROJECTOR_IP = "192.168.101.187:5555"
+PROJECTOR_IP = "192.168.101.187"
+REMOTE_HTTP_URL = f"http://{PROJECTOR_IP}:8080"
 
-def send_adb_async(cmd):
+def send_key_async(code):
     def _run():
-        full_cmd = f'"{ADB_PATH}" -s {PROJECTOR_IP} {cmd}'
-        subprocess.run(full_cmd, shell=True, capture_output=True)
+        # Try instant HTTP API first (Projector on-device server)
+        try:
+            req = urllib.request.Request(f"{REMOTE_HTTP_URL}/api/key/{code}", method="POST")
+            with urllib.request.urlopen(req, timeout=0.8) as resp:
+                if resp.status == 200:
+                    return
+        except Exception:
+            pass
+        # Fallback to ADB over Wi-Fi
+        try:
+            full_cmd = f'"{ADB_PATH}" -s {PROJECTOR_IP}:5555 shell input keyevent {code}'
+            subprocess.run(full_cmd, shell=True, capture_output=True, timeout=2)
+        except Exception:
+            pass
+    threading.Thread(target=_run, daemon=True).start()
+
+def launch_app_async(pkg):
+    def _run():
+        try:
+            req = urllib.request.Request(f"{REMOTE_HTTP_URL}/api/launch/{pkg}", method="POST")
+            with urllib.request.urlopen(req, timeout=0.8) as resp:
+                if resp.status == 200:
+                    return
+        except Exception:
+            pass
+        try:
+            full_cmd = f'"{ADB_PATH}" -s {PROJECTOR_IP}:5555 shell monkey -p {pkg} -c android.intent.category.LAUNCHER 1'
+            subprocess.run(full_cmd, shell=True, capture_output=True, timeout=2)
+        except Exception:
+            pass
     threading.Thread(target=_run, daemon=True).start()
 
 def key(code):
-    send_adb_async(f"shell input keyevent {code}")
+    send_key_async(code)
 
 def launch_app(pkg):
-    send_adb_async(f"shell monkey -p {pkg} -c android.intent.category.LAUNCHER 1")
+    launch_app_async(pkg)
 
 class ProjectorRemoteApp(tk.Tk):
     def __init__(self):

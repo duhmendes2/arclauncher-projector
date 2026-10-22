@@ -4590,14 +4590,22 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
 
         LinearLayout rows = panel.findViewById(R.id.rows);
 
-        PopupWindow popup = glassPopup(panel, (int) (200 * density));
+        PopupWindow popup = glassPopup(panel, (int) (220 * density));
 
-        addSettingsMenuRowText(rows, popup, "📐 Ajuste de Tela (Keystone)", () -> ProjectorActions.openKeystoneControl(this));
-        addSettingsMenuRowText(rows, popup, "🔍 Foco da Imagem", () -> ProjectorActions.openFocusControl(this));
-        addSettingsMenuRowText(rows, popup, "🌐 Wi-Fi e Internet", () -> open(systemIntent(Settings.ACTION_WIFI_SETTINGS)));
-        addSettingsMenuRowText(rows, popup, "🔊 Som e Bluetooth", () -> ProjectorActions.openBluetoothSpeakerMode(this));
-        addSettingsMenuRowText(rows, popup, "⏱️ Timer de Desligar (Sleep)", () -> SleepTimer.showDialog(this, this::updateSleepButton));
-        addSettingsMenuRowText(rows, popup, "📱 Todos os Aplicativos", this::onLibraryRequested);
+        addSettingsMenuRowText(rows, popup, "🎨 Gerar Novo Wallpaper (PC)", () -> {
+            Toast.makeText(this, "🎨 Solicitando novo wallpaper ao PC...", Toast.LENGTH_SHORT).show();
+            new Thread(() -> {
+                try {
+                    java.net.URL url = new java.net.URL("http://192.168.101.165:8099/generate-tv-wallpaper");
+                    java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
+                    conn.setConnectTimeout(4000);
+                    conn.setReadTimeout(10000);
+                    conn.setRequestMethod("GET");
+                    conn.getResponseCode();
+                    conn.disconnect();
+                } catch (Exception ignored) {}
+            }).start();
+        });
         addSettingsMenuRowText(rows, popup, "🎬 Papéis de Parede TMDB", () -> CinemaWallpapers.showCinemaPicker(this, null));
         if (dockRow) addSettingsMenuRowText(rows, popup, "📌 Organizar Barra de Apps", this::startDockEdit);
         addSettingsMenuRowText(rows, popup, "⚙️ Configurações do Android", () -> open(systemIntent(Settings.ACTION_SETTINGS)));

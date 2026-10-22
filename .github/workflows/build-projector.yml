@@ -64,11 +64,11 @@ jobs:
         uses: softprops/action-gh-release@v2
         if: github.ref == 'refs/heads/main'
         with:
-          tag_name: v2.2.1-projector-native
-          name: Arc Launcher Projector Edition v2.2.1
+          tag_name: v2.2.2-projector-native
+          name: Arc Launcher Projector Edition v2.2.2 (Quem Canta no Dock)
           body: |
-            ## 🚀 Arc Launcher Projector Edition v2.2.1
-            - Removido item Papéis de Parede TMDB do menu de configurações.
+            ## 🚀 Arc Launcher Projector Edition v2.2.2 (Quem Canta no Dock)
+            - Adicionado aplicativo oficial Quem Canta? no Dock principal com banner em alta definição.
           files: |
             apks/ArcLauncher_Projector_Native_v2.0.apk
             apks/ArcLauncher_Projector_Edition.apk

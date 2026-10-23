@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/root"
+    android:soundEffectsEnabled="false"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FF000000">
@@ -304,7 +305,7 @@
                 android:fontFamily="@font/outfit_medium"
                 android:letterSpacing="0.04"
                 android:focusable="false"
-                android:visibility="gone" />
+                android:visibility="visible" />
 
             <LinearLayout
                 android:id="@+id/topButtons"
@@ -345,8 +346,9 @@
                     android:id="@+id/btnSleep"
                     style="@style/TopButton"
                     android:text="Sleep"
+                    android:visibility="gone"
                     android:drawableStart="@drawable/ic_sleep"
-                    android:nextFocusDown="@+id/grid" />
+                    android:nextFocusDown="@+id/grid"  android:visibility="gone"/>
 
                 <TextView
                     android:id="@+id/btnSettings"

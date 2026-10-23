@@ -2963,6 +2963,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         if (statsThread != null) return;
 
         stats.setVisibility(View.VISIBLE);
+        WeatherCrypto.start(wx -> { if (stats != null && wx != null && !wx.isEmpty()) stats.setText(wx); });
 
         cpuTotalPrev = -1;
 
@@ -3039,6 +3040,11 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
 
 
     private String readStatsLine() {
+        WeatherCrypto.refresh(wx -> {
+            if (stats != null && wx != null && !wx.isEmpty()) stats.setText(wx);
+        });
+        String liveWx = WeatherCrypto.getLiveLine();
+        if (liveWx != null && !liveWx.isEmpty()) return liveWx;
 
         int cpu = cpuPercent();
 

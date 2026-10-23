@@ -64,11 +64,14 @@ jobs:
         uses: softprops/action-gh-release@v2
         if: github.ref == 'refs/heads/main'
         with:
-          tag_name: v2.2.5-projector-native
-          name: Arc Launcher Projector Edition v2.2.5 (Dock Limpo sem botão Mais Apps)
+          tag_name: v2.2.6-projector-native
+          name: Arc Launcher Projector Edition v2.2.6 (Weather, Crypto, All Apps Dock)
           body: |
-            ## 🚀 Arc Launcher Projector Edition v2.2.5
-            - Removido botão "+" / Mais Apps do dock inferior para visual 100% limpo e direto.
+            ## 🚀 Arc Launcher Projector Edition v2.2.6
+            - Barra de Clima ao vivo (Taubaté/SP) e Cotações Cripto/Dólar (Binance) no topo
+            - Botão "Todos os Apps" integrado diretamente na bandeja horizontal com fundo sólido
+            - Removido botão Sleep do topo
+            - Navegação 100% silenciosa (áudio mudo)
           files: |
             apks/ArcLauncher_Projector_Native_v2.0.apk
             apks/ArcLauncher_Projector_Edition.apk

@@ -348,7 +348,7 @@
                     android:text="Sleep"
                     android:visibility="gone"
                     android:drawableStart="@drawable/ic_sleep"
-                    android:nextFocusDown="@+id/grid"  android:visibility="gone"/>
+                    android:nextFocusDown="@+id/grid" />
 
                 <TextView
                     android:id="@+id/btnSettings"
